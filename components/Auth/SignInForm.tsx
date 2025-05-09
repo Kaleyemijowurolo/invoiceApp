@@ -68,16 +68,6 @@ export default function SignInForm() {
             placeholder="Email"
             required
           />
-          {/* <div>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            required
-          />
-
-          </div> */}
 
           <div className={styles.passwordWrapper}>
             <input

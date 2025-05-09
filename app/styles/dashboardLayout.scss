@@ -1,0 +1,28 @@
+@import "./global.scss";
+
+.dashboardLayout {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  // padding: 20px;
+  height: 100vh;
+
+  &.light-mode {
+    background-color: get-color(light-bg);
+    color: get-color(dark-blue);
+  }
+
+  &.dark-mode {
+    background-color: get-color(dark-bg);
+    color: get-color(light-gray);
+  }
+}
+
+.children {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}

@@ -1,6 +1,9 @@
 // import type { Metadata } from "next";
 
 // import Image from "next/image";
+import Logo from "@/components/icons/Logo";
+import "../styles/dashboardLayout.scss";
+import SideBar from "@/components/SideBar";
 
 export default function RootLayout({
   children,
@@ -8,38 +11,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main>
-      <Header />
+    <main className={"dashboardLayout"}>
+      <SideBar />
       <Main>{children}</Main>
     </main>
   );
 }
-
-const Header = () => {
-  return (
-    <div>
-      <div>
-        {/* <Image src={"/affiliate-logo.png"} height={50} width={50} alt="logo" /> */}
-      </div>
-      <div>Your Dashboard</div>
-      {/* <UserPopOver /> */}
-    </div>
-  );
-};
-
-const SideNav = () => {
-  return <div>{/* <Sidebar /> */}</div>;
-};
 
 const Main = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  return (
-    <div>
-      <SideNav />
-      <div>{children}</div>
-    </div>
-  );
+  return <div className="children">{children}</div>;
 };

@@ -28,6 +28,9 @@ $colors: (
   light-pink: #9277ff,
   light-bg: #f8f8fb,
   dark-bg: #141625,
+  paid: #33d69f,
+  pending: #ff8f00,
+  draft: #373b53,
 );
 
 @function get-color($key) {
@@ -35,8 +38,25 @@ $colors: (
 }
 
 :root {
-  --font-family: "League Spartan", sans-serif;
-  --transition: all 0.3s ease;
+  --font-family: "League Spartan",
+  // --font-family: "League Spartan", sans-serif,
+  --transition: all 0.3s ease,
+  --primary-purple: #7c5dfa,
+  --secondary-purple: #9277ff,
+  --dark-blue: #1e2139,
+  --medium-blue: #252945,
+  --light-gray: #dfe3fa,
+  --gray: #888eb0,
+  --white: #ffffff,
+  --blue-gray: #7e88c3,
+  --dark-gray: #0c0e16,
+  --red: #ec5757,
+  --light-pink: #9277ff,
+  --light-bg: #f8f8fb,
+  --dark-bg: #141625,
+  --paid: #33d69f,
+  --pending: #ff8f00,
+  --draft: #373b53,
 }
 
 body {

@@ -1,19 +1,65 @@
 "use client";
-import { signOut, useSession } from "next-auth/react";
+
+import { useSession } from "next-auth/react";
+import { useQuery } from "@tanstack/react-query";
+import { apiService } from "@/apiServices";
+import FilterSection from "@/components/FilterSection";
+import InvoiceList from "@/components/InvoiceList";
+import ShimmerLoader from "@/components/ShimmerLoader";
+import styles from "./Dashboard.module.scss";
+import { useState } from "react";
+import { Invoice, PaginatedInvoicesResponse } from "@/types";
 
 export default function Dashboard() {
-  const { data: session } = useSession();
-  console.log(session, "session");
+  const { data: session, status } = useSession();
+  // const { data: session, status } = useSession({
+  //   required: true,
+  //   onUnauthenticated() {
+  //     window.location.href = "/auth/signin";
+  //   },
+  // });
+
+  const { data, isLoading, error } = useQuery<PaginatedInvoicesResponse>({
+    queryKey: ["invoices"],
+    queryFn: () => apiService.getAllInvoices(),
+    // enabled: status === "authenticated",
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+  });
+
+  console.log(data, "invoices in db");
+
+  const invoices = data?.invoices || [];
+
+  console.log(invoices, "invoices var");
+
+  const [filteredInvoices, setFilteredInvoices] = useState<Invoice[]>(
+    data?.invoices || []
+  );
+
+  console.log(filteredInvoices, "filteredInvoices");
+  const handleFilterChange = (status: string) => {
+    if (!status) {
+      setFilteredInvoices(invoices);
+    } else {
+      setFilteredInvoices(
+        invoices.filter((invoice: Invoice) => invoice.status === status)
+      );
+    }
+  };
+
+  if (status === "loading" || isLoading) return <ShimmerLoader />;
+  if (error)
+    return (
+      <div className={styles.error}>Error: {(error as Error).message}</div>
+    );
+
   return (
-    <div>
-      Dasbaord
-      <button onClick={() => signOut()}> SignOut</button>
-      {session?.user?.name && (
-        <div>
-          <h1>Hello {session.user.name}</h1>
-          <p>Email: {session.user.email}</p>
-        </div>
-      )}
+    <div className={styles.dashboard}>
+      <FilterSection
+        invoiceCount={data?.total || 0}
+        onFilterChange={handleFilterChange}
+      />
+      <InvoiceList invoices={filteredInvoices} />
     </div>
   );
 }

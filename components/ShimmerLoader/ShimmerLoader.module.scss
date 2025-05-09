@@ -1,0 +1,254 @@
+@import "../../app/styles/global.scss";
+
+.shimmerWrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+
+  &.light-mode {
+    background-color: get-color(light-bg);
+  }
+
+  &.dark-mode {
+    background-color: get-color(dark-bg);
+  }
+}
+
+.filterSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.titleShimmer {
+  width: 120px;
+  height: 24px;
+  background: get-color(gray);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(get-color(light-gray), 0.2),
+      transparent
+    );
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+.countShimmer {
+  width: 80px;
+  height: 16px;
+  background: get-color(gray);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(get-color(light-gray), 0.2),
+      transparent
+    );
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+.filterButtonShimmer {
+  width: 100px;
+  height: 20px;
+  background: get-color(gray);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(get-color(light-gray), 0.2),
+      transparent
+    );
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+.newInvoiceButtonShimmer {
+  width: 120px;
+  height: 40px;
+  background: get-color(gray);
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(get-color(light-gray), 0.2),
+      transparent
+    );
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+.invoiceList {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.invoiceItemShimmer {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  align-items: center;
+  padding: 15px;
+  border-radius: 8px;
+  background: get-color(white);
+  border: 1px solid get-color(gray);
+
+  &.dark-mode {
+    background: get-color(medium-blue);
+  }
+}
+
+.idShimmer,
+.clientNameShimmer,
+.totalShimmer,
+.statusShimmer,
+.paymentDueShimmer {
+  height: 16px;
+  background: get-color(gray);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(get-color(light-gray), 0.2),
+      transparent
+    );
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+.idShimmer {
+  width: 60px;
+}
+
+.clientNameShimmer {
+  width: 100px;
+}
+
+.totalShimmer {
+  width: 80px;
+}
+
+.statusShimmer {
+  width: 70px;
+}
+
+.paymentDueShimmer {
+  width: 90px;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+// Responsive design
+@include respond-to(mobile) {
+  .filterSection {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+
+  .invoiceItemShimmer {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 10px;
+    .idShimmer,
+    .clientNameShimmer,
+    .totalShimmer {
+      grid-column: 1 / 2;
+    }
+    .statusShimmer,
+    .paymentDueShimmer {
+      grid-column: 2 / 3;
+    }
+  }
+}
+
+@include respond-to(tablet) {
+  .filterSection {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .invoiceItemShimmer {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    .idShimmer,
+    .clientNameShimmer {
+      grid-column: 1 / 2;
+    }
+    .totalShimmer {
+      grid-column: 2 / 3;
+    }
+    .statusShimmer {
+      grid-column: 3 / 4;
+    }
+    .paymentDueShimmer {
+      grid-column: 4 / 5;
+    }
+  }
+}

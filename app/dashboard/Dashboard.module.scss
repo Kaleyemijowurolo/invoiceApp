@@ -1,0 +1,51 @@
+@import "../../app/styles/global";
+
+.dashboard {
+  //   max-width: 1200px;
+  width: 60%;
+  height: 80%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+
+  &.light-mode {
+    background-color: get-color(light-bg);
+    color: get-color(dark-blue);
+  }
+
+  &.dark-mode {
+    background-color: get-color(dark-bg);
+    color: get-color(light-gray);
+  }
+}
+
+.loading {
+  text-align: center;
+  font-size: 18px;
+  color: get-color(gray);
+}
+
+.error {
+  text-align: center;
+  color: get-color(red);
+  font-size: 16px;
+}
+
+// Responsive design
+@include respond-to(mobile) {
+  .dashboard {
+    width: 100%;
+    padding: 10px;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+@include respond-to(tablet) {
+  .dashboard {
+    width: 80%;
+    padding: 15px;
+    flex-direction: column;
+    gap: 15px;
+  }
+}

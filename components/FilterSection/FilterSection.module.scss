@@ -1,0 +1,141 @@
+@import "../../app/styles/global.scss";
+
+.filterSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.actions {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.header {
+  h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+  }
+  p {
+    color: get-color(blue-gray);
+    margin: 5px 0 0;
+  }
+}
+
+.filter {
+  position: relative;
+}
+
+.filterButton {
+  background: none;
+  border: none;
+  color: get-color(dark-gray);
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  span {
+    font-size: 12px;
+  }
+
+  &:hover {
+    color: get-color(secondary-purple);
+  }
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: get-color(white);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  padding: 10px 0;
+  margin: 5px 0 0;
+  min-width: 120px;
+  z-index: 10;
+
+  &.dark-mode {
+    background-color: get-color(medium-blue);
+  }
+
+  li {
+    padding: 8px 15px;
+    cursor: pointer;
+    color: get-color(dark-blue);
+
+    &.dark-mode {
+      color: get-color(light-gray);
+    }
+
+    &:hover {
+      background-color: get-color(light-gray);
+    }
+
+    &.active {
+      font-weight: 700;
+      color: get-color(primary-purple);
+    }
+  }
+}
+
+.newInvoiceButton {
+  width: 150px;
+  height: 48px;
+  background-color: get-color(primary-purple);
+  color: get-color(white);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+
+  justify-content: space-between;
+
+  .newInvoiceText {
+    flex: 1;
+  }
+  &:hover {
+    background-color: get-color(secondary-purple);
+  }
+}
+
+// Responsive design
+@include respond-to(mobile) {
+  .filterSection {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+
+  .header {
+    h1 {
+      font-size: 20px;
+    }
+    p {
+      font-size: 14px;
+    }
+  }
+
+  .newInvoiceButton {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}
+
+@include respond-to(tablet) {
+  .filterSection {
+    flex-direction: row;
+    align-items: center;
+  }
+}
