@@ -1,0 +1,13 @@
+.toggle {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  background-color: get-color(medium-blue);
+  color: white;
+  cursor: pointer;
+  transition: var(--transition);
+
+  &:hover {
+    background-color: darken(get-color(medium-blue), 10%);
+  }
+}

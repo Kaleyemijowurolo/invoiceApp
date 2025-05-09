@@ -1,0 +1,128 @@
+// // ... (existing content)
+@import "../../app/styles/global.scss";
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+
+  &.dark {
+    background-color: get-color(dark-bg);
+    color: get-color(light-gray);
+  }
+
+  &.light {
+    background-color: get-color(light-bg);
+    color: get-color(dark-blue);
+  }
+
+  .auth-form {
+    width: 100%;
+    max-width: 450px;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+    &.dark {
+      background-color: get-color(medium-blue);
+    }
+
+    &.light {
+      background-color: get-color(white);
+    }
+
+    form {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+      gap: 10px;
+      justify-items: center;
+      align-items: center;
+
+      .passwordWrapper {
+        position: relative;
+        width: 100%;
+        height: max-content;
+      }
+
+      .showPasswordButton {
+        position: absolute;
+        right: 0%;
+        top: 10%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: max-content;
+        width: 2.3rem;
+        height: 2.3rem;
+        border-radius: 50%;
+        margin: 0;
+        background: none;
+        cursor: pointer;
+        svg {
+          stroke: get-color(primary-purple); // Default color
+          transition: stroke 0.3s ease;
+        }
+        &:hover svg {
+          stroke: get-color(light-gray); // Hover color
+        }
+      }
+    }
+
+    h1 {
+      font-family: "League Spartan", sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      height: 40px;
+      text-indent: 5px;
+      border: 1px solid get-color(gray);
+      border-radius: 4px;
+      background-color: transparent;
+
+      &:focus {
+        outline: none;
+        border-color: get-color(primary-purple);
+      }
+    }
+
+    button {
+      width: 100%;
+      height: 50px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 30px;
+      background-color: get-color(primary-purple);
+      color: get-color(white);
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: darken(get-color(primary-purple), 10%);
+      }
+
+      &:disabled {
+        background-color: get-color(gray);
+        cursor: not-allowed;
+      }
+    }
+
+    .error {
+      color: get-color(red);
+      font-size: 12px;
+      margin: 2px 0px;
+    }
+  }
+}
+
+@function darken($color, $amount) {
+  @return mix(#000000, $color, $amount);
+}
