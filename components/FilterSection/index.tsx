@@ -3,7 +3,7 @@
 import { useState } from "react";
 import styles from "./FilterSection.module.scss";
 import { useTheme } from "@/lib/context/ThemeContext";
-import NewInvoiceForm from "../NewInvoiceForm";
+import NewInvoiceForm from "../InvoiceForm";
 
 interface FilterSectionProps {
   invoiceCount: number;
@@ -170,7 +170,11 @@ const FilterSection: React.FC<FilterSectionProps> = ({
 
       {isCreatingNewInvoice && (
         <div className={styles.modal}>
-          <NewInvoiceForm onDiscard={handleCloseNewInvoiceModal} />
+          <NewInvoiceForm
+            formAction="CREATE"
+            formTitle="New Invoice"
+            onDiscard={handleCloseNewInvoiceModal}
+          />
         </div>
       )}
     </div>

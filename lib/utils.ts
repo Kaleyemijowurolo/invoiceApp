@@ -56,6 +56,12 @@ export default function generateUniqueReferralCode() {
 }
 
 // =================================================
+const date = new Date("2021-09-20T00:00:00.000Z");
+export const formattedDate = date.toLocaleDateString("en-GB", {
+  day: "2-digit",
+  month: "short",
+  year: "numeric",
+});
 
 export const formatDate = (dateString: string, showTime?: boolean) => {
   if (!dateString) return "";

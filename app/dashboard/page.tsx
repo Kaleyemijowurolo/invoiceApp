@@ -23,7 +23,7 @@ export default function Dashboard() {
     queryKey: ["invoices"],
     queryFn: () => apiService.getAllInvoices(),
     // enabled: status === "authenticated",
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    // staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
 
   console.log(data, "invoices in db");

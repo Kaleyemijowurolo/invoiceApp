@@ -18,6 +18,7 @@ export interface Address {
 }
 
 export interface Invoice {
+  _id?: string;
   id: string;
   createdAt: string;
   paymentDue: string;
@@ -38,4 +39,28 @@ export interface PaginatedInvoicesResponse {
   page: number;
   total: number;
   totalPages: number;
+}
+
+export interface InvoiceFormItem {
+  name: string;
+  quantity: number;
+  price: number;
+  total: number;
+}
+
+export interface InvoiceFormData {
+  billFromStreet: string;
+  billFromCity: string;
+  billFromPostCode: string;
+  billFromCountry: string;
+  billToClientName: string;
+  billToClientEmail: string;
+  billToStreet: string;
+  billToCity: string;
+  billToPostCode: string;
+  billToCountry: string;
+  invoiceDate: string;
+  paymentTerms: string;
+  projectDescription: string;
+  items: InvoiceFormItem[];
 }

@@ -19,7 +19,7 @@ const InvoiceCardMobile: React.FC<InvoiceCardMobileProps> = ({ invoice }) => {
       className={`${styles.invoiceCard} ${
         styles[darkMode ? "dark-mode" : "light-mode"]
       }`}
-      onClick={() => router.push(`/invoice/${invoice.id}`)}
+      onClick={() => router.push(`dashboard/${invoice.id}`)}
     >
       <div className={styles.upSection}>
         <span className={styles.id}>

@@ -23,13 +23,14 @@
   align-items: flex-end;
   justify-content: center;
   overflow: hidden;
+  // border: solid red;
   position: relative;
 }
 
 // Responsive design
 @include respond-to(mobile) {
   .children {
-    padding: 15px !important;
+    padding: 5px !important;
   }
 }
 
@@ -37,11 +38,10 @@
   .dashboardLayout {
     flex-direction: column;
     width: 100%;
-    overflow: hidden;
   }
 
   .children {
-    padding: 20px;
+    padding: 10px;
     align-items: flex-start;
   }
 }

@@ -1,20 +1,50 @@
 @import "../../app/styles/global.scss";
 
-.invoiceDetails {
-  padding: 24px;
-  background-color: get-color(white);
-  border-radius: 8px;
+.invoiceDetailContainer {
   width: 100%;
-  max-width: 700px;
-  margin: 0 auto;
+  display: grid;
+  place-items: center;
+  align-items: center;
+  max-width: 800px;
+  height: 100%;
 
+  @include respond-to(mobile) {
+    display: flex;
+    align-items: start;
+    overflow-y: auto;
+  }
+  @include respond-to(tablet) {
+    overflow-y: auto;
+    display: flex;
+    align-items: start;
+  }
+}
+.overlay {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10000;
+  // background-color: red;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.invoiceDetails {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   &.dark-mode {
-    background-color: get-color(medium-blue);
-    color: get-color(white);
-
     .status,
-    .label,
     .sectionTitle {
+      color: get-color(white);
+    }
+
+    .label {
+      color: get-color(light-gray);
+    }
+    .value {
       color: get-color(white);
     }
 
@@ -34,20 +64,26 @@
     }
 
     .button.edit {
-      background-color: get-color(gray-light);
-      color: get-color(dark-blue);
-    }
-
-    .button.delete {
-      background-color: get-color(red);
-    }
-
-    .button.markPaid {
-      background-color: get-color(primary-purple);
+      background-color: get-color(medium-blue);
+      color: get-color(light-gray);
     }
 
     .goBack {
       color: get-color(white);
+    }
+
+    .statusSection,
+    .detailsSection {
+      background-color: get-color(dark-blue);
+    }
+    .statusContainer p {
+      color: get-color(light-gray);
+    }
+    .itemList {
+      background-color: get-color(medium-blue);
+    }
+    .buttonGroupResponsive {
+      background-color: get-color(dark-bg);
     }
   }
 
@@ -55,9 +91,15 @@
     color: get-color(dark-blue);
 
     .status,
-    .label,
     .sectionTitle {
       color: get-color(dark-blue);
+    }
+
+    .detailsGrid .label {
+      color: get-color(blue-gray);
+    }
+    .detailsGrid .value {
+      color: get-color(dark-gray);
     }
 
     .status.pending {
@@ -76,34 +118,36 @@
     }
 
     .button.edit {
-      background-color: get-color(gray-light);
-      color: get-color(dark-blue);
-    }
-
-    .button.delete {
-      background-color: get-color(red);
-    }
-
-    .button.markPaid {
-      background-color: get-color(primary-purple);
+      background-color: #f9fafe;
+      color: get-color(blue-gray);
     }
 
     .goBack {
       color: get-color(blue-gray);
+    }
+
+    .statusContainer p {
+      color: get-color(gray);
+    }
+    .itemList {
+      background-color: #00000005;
+    }
+    .buttonGroupResponsive {
+      background-color: get-color(white);
     }
   }
 
   .goBack {
     font-size: 14px;
     font-weight: 700;
-    margin-bottom: 24px;
-    cursor: pointer;
-    display: block;
-    text-decoration: none;
+    width: max-content;
+    background-color: transparent;
+    border: none;
+    display: flex;
 
-    &:hover {
-      text-decoration: underline;
-    }
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
   }
 
   .header {
@@ -126,9 +170,22 @@
   .statusSection {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 16px;
-    margin-bottom: 24px;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
+    .statusContainer {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+
+      p {
+        font-weight: 500;
+        font-size: 13px;
+      }
+    }
     .status {
       padding: 4px 8px;
       border-radius: 6px;
@@ -164,11 +221,6 @@
           opacity: 0.9;
         }
 
-        &.edit {
-          background-color: get-color(gray-light);
-          color: get-color(dark-blue);
-        }
-
         &.delete {
           background-color: get-color(red);
           color: get-color(white);
@@ -182,26 +234,51 @@
     }
   }
 
+  .detailsSection {
+    border-radius: 8px;
+    padding: 30px;
+    flex: 1;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
   .detailsGrid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
+    grid-template-columns: 1fr 1fr 1fr;
     margin-bottom: 24px;
 
     .label {
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 500;
-      margin-bottom: 8px;
+      margin: 15px 0;
     }
 
     .value {
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    div {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      span {
+        margin: 2px 0;
+      }
+    }
+    .address {
+      margin-bottom: 0 !important;
     }
   }
 
+  .tableSection {
+    flex: 1;
+    justify-self: flex-end;
+  }
+
   .itemList {
-    margin-bottom: 24px;
+    padding: 20px;
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
 
     .itemRow {
       display: grid;
@@ -212,12 +289,11 @@
       .label {
         font-size: 12px;
         font-weight: 500;
-        color: get-color(blue-gray);
       }
 
       .value {
         font-size: 14px;
-        font-weight: 700;
+        font-weight: bold;
       }
     }
   }
@@ -226,15 +302,56 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px;
+    padding: 20px;
     background-color: get-color(dark-gray);
-    border-radius: 8px;
     font-size: 16px;
     font-weight: 700;
     color: get-color(white);
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
   }
 
   @include respond-to(mobile) {
+    padding: 0px !important;
+    padding-bottom: 80px !important;
+
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .detailsGrid {
+      grid-template-columns: 1fr;
+    }
+
+    .itemRow {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .statusSection {
+      padding: 10px !important;
+
+      .statusContainer {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+      }
+      .buttonGroupDesktop {
+        display: none;
+      }
+
+      .itemList {
+        padding: 5px !important;
+      }
+    }
+    .detailsSection {
+      padding: 10px !important;
+    }
+  }
+
+  @include respond-to(tablet) {
     padding: 16px;
 
     .header {
@@ -251,5 +368,20 @@
       grid-template-columns: 1fr;
       gap: 8px;
     }
+  }
+}
+
+.buttonGroupResponsive {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  display: none !important;
+  align-items: center;
+  justify-content: center;
+
+  @include respond-to(mobile) {
+    display: flex !important;
   }
 }
