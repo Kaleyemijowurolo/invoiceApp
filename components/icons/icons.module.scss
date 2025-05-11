@@ -1,0 +1,65 @@
+@import "../../app/styles/global.scss";
+
+// Default: Hide all logos
+.mobileLogo,
+.tabletLogo,
+.desktopLogo {
+  display: none;
+}
+
+// Mobile (0px to 576px)
+.mobileLogo {
+  display: block;
+}
+
+// Tablet (577px to 768px)
+@include respond-above(mobile) {
+  .mobileLogo {
+    display: none;
+  }
+  .tabletLogo {
+    display: block;
+  }
+}
+
+// Desktop (769px and above)
+@include respond-above(tablet) {
+  .tabletLogo {
+    display: none;
+  }
+  .desktopLogo {
+    display: flex;
+  }
+}
+
+// @import "../../app/styles/global.scss";
+
+// // Default: Desktop
+// .mobileLogo,
+// .tabletLogo {
+//   display: none;
+// }
+
+// .desktopLogo {
+//   display: flex;
+// }
+
+// // Tablet (≤768px)
+// @include respond-to(tablet) {
+//   .desktopLogo {
+//     display: none;
+//   }
+//   .tabletLogo {
+//     display: block;
+//   }
+// }
+
+// // Mobile (≤576px)
+// @include respond-to(mobile) {
+//   .tabletLogo {
+//     display: none;
+//   }
+//   .mobileLogo {
+//     display: block;
+//   }
+// }

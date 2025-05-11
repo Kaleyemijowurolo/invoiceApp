@@ -1,0 +1,255 @@
+@import "../../app/styles/global.scss";
+
+.invoiceDetails {
+  padding: 24px;
+  background-color: get-color(white);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+
+  &.dark-mode {
+    background-color: get-color(medium-blue);
+    color: get-color(white);
+
+    .status,
+    .label,
+    .sectionTitle {
+      color: get-color(white);
+    }
+
+    .status.pending {
+      background-color: rgba(get-color(pending), 0.1);
+      color: get-color(pending);
+    }
+
+    .status.paid {
+      background-color: rgba(get-color(paid), 0.1);
+      color: get-color(paid);
+    }
+
+    .amountDue {
+      background-color: get-color(dark-gray);
+      color: get-color(white);
+    }
+
+    .button.edit {
+      background-color: get-color(gray-light);
+      color: get-color(dark-blue);
+    }
+
+    .button.delete {
+      background-color: get-color(red);
+    }
+
+    .button.markPaid {
+      background-color: get-color(primary-purple);
+    }
+
+    .goBack {
+      color: get-color(white);
+    }
+  }
+
+  &.light-mode {
+    color: get-color(dark-blue);
+
+    .status,
+    .label,
+    .sectionTitle {
+      color: get-color(dark-blue);
+    }
+
+    .status.pending {
+      background-color: rgba(get-color(pending), 0.1);
+      color: get-color(pending);
+    }
+
+    .status.paid {
+      background-color: rgba(get-color(paid), 0.1);
+      color: get-color(paid);
+    }
+
+    .amountDue {
+      background-color: get-color(dark-gray);
+      color: get-color(white);
+    }
+
+    .button.edit {
+      background-color: get-color(gray-light);
+      color: get-color(dark-blue);
+    }
+
+    .button.delete {
+      background-color: get-color(red);
+    }
+
+    .button.markPaid {
+      background-color: get-color(primary-purple);
+    }
+
+    .goBack {
+      color: get-color(blue-gray);
+    }
+  }
+
+  .goBack {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    cursor: pointer;
+    display: block;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    .invoiceId {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .description {
+      font-size: 14px;
+      color: get-color(blue-gray);
+    }
+  }
+
+  .statusSection {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+
+    .status {
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: capitalize;
+
+      &.pending {
+        background-color: rgba(get-color(pending), 0.1);
+        color: get-color(pending);
+      }
+
+      &.paid {
+        background-color: rgba(get-color(paid), 0.1);
+        color: get-color(paid);
+      }
+    }
+
+    .buttonGroup {
+      display: flex;
+      gap: 8px;
+
+      .button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 24px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 700;
+        transition: opacity 0.3s;
+
+        &:hover {
+          opacity: 0.9;
+        }
+
+        &.edit {
+          background-color: get-color(gray-light);
+          color: get-color(dark-blue);
+        }
+
+        &.delete {
+          background-color: get-color(red);
+          color: get-color(white);
+        }
+
+        &.markPaid {
+          background-color: get-color(primary-purple);
+          color: get-color(white);
+        }
+      }
+    }
+  }
+
+  .detailsGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+
+    .label {
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .value {
+      font-size: 14px;
+      font-weight: 700;
+    }
+  }
+
+  .itemList {
+    margin-bottom: 24px;
+
+    .itemRow {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+
+      .label {
+        font-size: 12px;
+        font-weight: 500;
+        color: get-color(blue-gray);
+      }
+
+      .value {
+        font-size: 14px;
+        font-weight: 700;
+      }
+    }
+  }
+
+  .amountDue {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background-color: get-color(dark-gray);
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    color: get-color(white);
+  }
+
+  @include respond-to(mobile) {
+    padding: 16px;
+
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .detailsGrid {
+      grid-template-columns: 1fr;
+    }
+
+    .itemRow {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+  }
+}

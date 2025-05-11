@@ -1,7 +1,3 @@
-// import type { Metadata } from "next";
-
-// import Image from "next/image";
-import Logo from "@/components/icons/Logo";
 import "../styles/dashboardLayout.scss";
 import SideBar from "@/components/SideBar";
 

@@ -7,7 +7,7 @@ import FilterSection from "@/components/FilterSection";
 import InvoiceList from "@/components/InvoiceList";
 import ShimmerLoader from "@/components/ShimmerLoader";
 import styles from "./Dashboard.module.scss";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Invoice, PaginatedInvoicesResponse } from "@/types";
 
 export default function Dashboard() {
@@ -32,22 +32,50 @@ export default function Dashboard() {
 
   console.log(invoices, "invoices var");
 
-  const [filteredInvoices, setFilteredInvoices] = useState<Invoice[]>(
+  const [initialInvoices, setFilteredInvoices] = useState<Invoice[]>(
     data?.invoices || []
   );
 
-  console.log(filteredInvoices, "filteredInvoices");
-  const handleFilterChange = (status: string) => {
-    if (!status) {
-      setFilteredInvoices(invoices);
-    } else {
-      setFilteredInvoices(
-        invoices.filter((invoice: Invoice) => invoice.status === status)
-      );
+  useEffect(() => {
+    if (data) {
+      setFilteredInvoices(data.invoices);
     }
+  }, [data?.invoices]);
+
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+
+  const handleFilterChange = (status: string[]) => {
+    setSelectedStatuses(status); // Update the selected statuses state
   };
 
-  if (status === "loading" || isLoading) return <ShimmerLoader />;
+  // Memoize filteredInvoices to avoid unnecessary recalculations
+  const filteredInvoices = useMemo(() => {
+    if (selectedStatuses.length === 0) {
+      return initialInvoices; // Return all invoices if no filters are selected
+    }
+    return initialInvoices.filter((invoice) =>
+      selectedStatuses.includes(invoice.status)
+    );
+  }, [initialInvoices, selectedStatuses]);
+
+  console.log(filteredInvoices, "filteredInvoices");
+  // const handleFilterChange = (status: string[]) => {
+  //   if (status.length === 0) {
+  //     setFilteredInvoices(invoices); // Show all invoices if no filters
+  //   } else {
+  //     setFilteredInvoices(
+  //       invoices.filter((invoice) => status.includes(invoice.status))
+  //     );
+  //   }
+  // };
+
+  if (
+    status === "loading" ||
+    isLoading
+    // ||
+    // (!error && filteredInvoices?.length === 0)
+  )
+    return <ShimmerLoader />;
   if (error)
     return (
       <div className={styles.error}>Error: {(error as Error).message}</div>
@@ -59,7 +87,9 @@ export default function Dashboard() {
         invoiceCount={data?.total || 0}
         onFilterChange={handleFilterChange}
       />
-      <InvoiceList invoices={filteredInvoices} />
+      <br />
+
+      <InvoiceList isLoading={isLoading} invoices={filteredInvoices} />
     </div>
   );
 }

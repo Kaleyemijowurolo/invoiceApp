@@ -5,6 +5,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 0;
+
+  width: 100%;
 }
 
 .actions {
@@ -36,13 +38,14 @@
   border: none;
   color: get-color(dark-gray);
   font-weight: 500;
+  font-size: 15px;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 5px;
 
-  span {
-    font-size: 12px;
+  &.dark-mode {
+    color: get-color(light-gray);
   }
 
   &:hover {
@@ -53,31 +56,57 @@
 .dropdown {
   position: absolute;
   top: 100%;
-  left: 0;
+  left: -50%;
   background-color: get-color(white);
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   list-style: none;
-  padding: 10px 0;
-  margin: 5px 0 0;
-  min-width: 120px;
+  padding: 25px;
+  // margin: 5px 0 0;
+  width: 192px;
+  height: 128px;
   z-index: 10;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(3, 1fr);
+  place-items: center;
+  // gap: 10px;
 
   &.dark-mode {
     background-color: get-color(medium-blue);
   }
 
-  li {
+  label {
+    width: 100%;
     padding: 8px 15px;
     cursor: pointer;
     color: get-color(dark-blue);
+    display: flex;
+    gap: 10px;
 
     &.dark-mode {
       color: get-color(light-gray);
     }
 
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      background-color: get-color(red);
+      border-radius: 50%;
+      border: 1px solid get-color(dark-gray);
+      transition: var(--transition);
+
+      &.dark-mode {
+        background-color: get-color(medium-blue);
+        border: 1px solid get-color(light-gray);
+      }
+    }
+
     &:hover {
-      background-color: get-color(light-gray);
+      input {
+        background-color: get-color(primary-purple);
+      }
     }
 
     &.active {
@@ -99,7 +128,6 @@
   transition: var(--transition);
   display: flex;
   align-items: center;
-
   justify-content: space-between;
 
   .newInvoiceText {
@@ -110,12 +138,41 @@
   }
 }
 
+.newInvoiceButtonMobile {
+  display: none;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  margin: 0;
+}
+
+.modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: start;
+  align-items: start;
+}
+
 // Responsive design
 @include respond-to(mobile) {
   .filterSection {
     flex-direction: column;
     gap: 15px;
     align-items: flex-start;
+    margin: 20px 0 0 0;
+    padding: 4px;
+  }
+  .newInvoiceButton {
+    width: 90px;
+    height: 44px;
+    justify-content: space-between;
   }
 
   .header {
@@ -128,8 +185,14 @@
   }
 
   .newInvoiceButton {
-    padding: 8px 12px;
-    font-size: 14px;
+    display: none;
+  }
+  .newInvoiceButtonMobile {
+    display: block;
+  }
+
+  .filterButton .byStatusText {
+    display: none;
   }
 }
 

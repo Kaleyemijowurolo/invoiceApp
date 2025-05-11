@@ -1,69 +1,140 @@
 @import "../../app/styles/global.scss";
 
 .invoiceCard {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  padding: 30px;
+  width: 100%;
+  height: 72px;
   border-radius: 8px;
   cursor: pointer;
-  transition: var(--transition);
-  background-color: get-color(white);
   box-shadow: 0 4px 8px rgba(get-color(dark-gray), 0.1);
+  border: 1px solid transparent;
+  transition: var(--transition);
 
   &.light-mode {
-    background-color: get-color(white);
-    border: 1px solid get-color(gray);
+    background-color: get-color(light-bg);
     color: get-color(dark-blue);
+
+    &.draft {
+      .status {
+        color: get-color(draft);
+        background-color: rgba(get-color(draft), 0.1);
+      }
+    }
+
+    &.pending {
+      .status {
+        color: get-color(pending);
+        background-color: rgba(get-color(pending), 0.1);
+      }
+    }
+
+    &.paid {
+      .status {
+        color: get-color(paid);
+        background-color: rgba(get-color(paid), 0.1);
+      }
+    }
   }
 
   &.dark-mode {
     background-color: get-color(medium-blue);
     color: get-color(light-gray);
+
+    &.draft {
+      .status {
+        color: get-color(white); // White in dark mode
+        background-color: rgba(get-color(dark-gray), 0.1);
+      }
+    }
+
+    &.pending {
+      .status {
+        color: get-color(pending);
+        background-color: rgba(get-color(pending), 0.1);
+      }
+    }
+
+    &.paid {
+      .status {
+        color: get-color(paid);
+        background-color: rgba(get-color(paid), 0.1);
+      }
+    }
+
+    .paymentDue,
+    .clientName,
+    .total {
+      color: get-color(white);
+    }
   }
 
   &:hover {
-    border-color: get-color(primary-purple);
+    border: 1px solid get-color(primary-purple);
   }
 
-  &.draft {
-    .status {
-      color: get-color(draft);
-      background-color: rgba(get-color(draft), 0.1);
+  .rightSection,
+  .leftSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // gap: 20px;
+    // padding: ;
+  }
+
+  .rightSection {
+    flex-basis: 40%;
+    justify-content: flex-end;
+
+    .arrow {
+      padding: 10px;
     }
   }
 
-  &.pending {
-    .status {
-      color: get-color(pending);
-      background-color: rgba(get-color(pending), 0.1);
-    }
-  }
-
-  &.paid {
-    .status {
-      color: get-color(paid);
-      background-color: rgba(get-color(paid), 0.1);
-    }
+  .leftSection {
+    flex: 1;
+    margin-left: 20px;
+    text-align: left;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    align-items: center;
   }
 }
 
 .id {
-  font-weight: 700;
+  font-weight: 800;
+  font-size: large;
+
+  span {
+    color: get-color(blue-gray);
+    font-weight: bolder;
+    font-size: large;
+  }
 }
 
 .clientName {
-  color: get-color(blue-gray);
+  color: get-color(gray);
 }
 
 .total {
   font-weight: 700;
+  color: get-color(dark-gray);
 }
 
 .status {
   text-transform: capitalize;
-  font-weight: 500;
+  margin-left: 20px;
+  font-weight: 800;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  width: 104px;
+  height: 40px;
+  gap: 5px;
 }
 
 .paymentDue {
@@ -73,37 +144,23 @@
 // Responsive design
 @include respond-to(mobile) {
   .invoiceCard {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-    gap: 10px;
-    .id,
-    .clientName,
-    .total {
-      grid-column: 1 / 2;
-    }
-    .status,
-    .paymentDue {
-      grid-column: 2 / 3;
-      text-align: right;
-    }
+    display: none;
   }
 }
-
-@include respond-to(tablet) {
+@include respond-above(tablet) {
   .invoiceCard {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    .id,
-    .clientName {
-      grid-column: 1 / 2;
+    flex-direction: row;
+    align-items: center;
+    height: 100%;
+    .leftSection,
+    .rightSection {
+      width: auto;
     }
-    .total {
-      grid-column: 2 / 3;
-    }
-    .status {
-      grid-column: 3 / 4;
-    }
+
+    .status,
     .paymentDue {
-      grid-column: 4 / 5;
+      margin-left: 20px;
+      text-align: center;
     }
   }
 }

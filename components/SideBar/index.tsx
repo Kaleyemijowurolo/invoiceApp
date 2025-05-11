@@ -12,11 +12,21 @@ const SideBar = () => {
       <Logo />
       <section className={styles.profileSection}>
         <div className={styles.darkModeToggleContainer}>
+          {/*             
           {darkMode ? (
             <LightModeIcon onClick={toggleDarkMode} />
           ) : (
             <NightModeIcon onClick={toggleDarkMode} />
-          )}
+          )} */}
+          <button
+            onClick={toggleDarkMode}
+            className={styles.themeButton}
+            aria-label={
+              darkMode ? "Switch to light mode" : "Switch to dark mode"
+            }
+          >
+            {darkMode ? <LightModeIcon /> : <NightModeIcon />}
+          </button>
         </div>
 
         <div className={styles.profileImage}>

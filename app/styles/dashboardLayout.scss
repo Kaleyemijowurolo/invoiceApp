@@ -4,8 +4,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  // padding: 20px;
-  height: 100vh;
+  height: 100dvh;
 
   &.light-mode {
     background-color: get-color(light-bg);
@@ -21,8 +20,28 @@
 .children {
   flex: 1;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  padding: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+// Responsive design
+@include respond-to(mobile) {
+  .children {
+    padding: 15px !important;
+  }
+}
+
+@include respond-to(tablet) {
+  .dashboardLayout {
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .children {
+    padding: 20px;
+    align-items: flex-start;
+  }
 }

@@ -1,0 +1,145 @@
+@import "../../app/styles/global.scss";
+
+.invoiceCard {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: var(--transition);
+
+  &.light-mode {
+    background-color: get-color(white);
+    color: get-color(dark-blue);
+
+    .paymentDue {
+      color: get-color(blue-gray);
+    }
+    .id,
+    .total {
+      color: get-color(dark-blue);
+    }
+
+    .clientName {
+      color: get-color(gray);
+    }
+    .status {
+      &.draft {
+        color: get-color(draft);
+        background-color: rgba(get-color(draft), 0.1);
+      }
+      &.pending {
+        color: get-color(pending);
+        background-color: rgba(get-color(pending), 0.1);
+      }
+      &.paid {
+        color: get-color(paid);
+        background-color: rgba(get-color(paid), 0.1);
+      }
+    }
+  }
+
+  &.dark-mode {
+    background-color: get-color(medium-blue);
+    color: get-color(light-gray);
+    border: 1px solid transparent;
+
+    .id,
+    .total,
+    .clientName {
+      color: get-color(white);
+    }
+    .paymentDue {
+      color: get-color(blue-gray);
+    }
+
+    .status {
+      &.draft {
+        color: get-color(white); // White in dark mode
+        background-color: rgba(get-color(dark-gray), 0.1);
+      }
+      &.pending {
+        color: get-color(pending);
+        background-color: rgba(get-color(pending), 0.1);
+      }
+      &.paid {
+        color: get-color(paid);
+        background-color: rgba(get-color(paid), 0.1);
+      }
+    }
+  }
+
+  // &:hover {
+  //   border-color: get-color(primary-purple);
+  // }
+
+  .upSection {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
+    // margin-bottom: 8px;
+    padding: 10px;
+
+    .id {
+      font-weight: 700;
+      font-size: 15px;
+
+      span {
+        color: get-color(blue-gray);
+        font-weight: bolder;
+        font-size: large;
+      }
+    }
+    .clientName {
+      font-weight: 500;
+      font-size: 13px;
+    }
+  }
+
+  .downSection {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    // gap: 8px;
+    padding: 10px;
+
+    .paymentDue {
+      font-weight: 500;
+      font-size: 13px;
+    }
+
+    .total {
+      font-weight: 700;
+      font-size: 15px;
+      margin-top: 8px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: capitalize;
+    }
+  }
+}
+
+// Responsive design: Mobile only (max-width: 576px)
+@include respond-to(mobile) {
+  .invoiceCard {
+    display: flex; // Ensure it’s visible on mobile
+  }
+}
+
+// Hide on tablet and desktop
+@include respond-above(tablet) {
+  .invoiceCard {
+    display: none;
+  }
+}
