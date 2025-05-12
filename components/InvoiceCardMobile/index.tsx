@@ -28,7 +28,6 @@ const InvoiceCardMobile: React.FC<InvoiceCardMobileProps> = ({ invoice }) => {
         </span>
         <span className={styles.clientName}>{invoice.clientName}</span>
       </div>
-      {/* =============================================== */}
       <div className={styles.downSection}>
         <div>
           <span className={styles.paymentDue}>

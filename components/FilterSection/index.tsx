@@ -24,8 +24,6 @@ const FilterSection: React.FC<FilterSectionProps> = ({
 
   const filters = ["Draft", "Pending", "Paid"];
 
-  console.log(selectedFilter, "selectedFilter");
-
   const handleCreateNewInvoiceModal = () => {
     setIsCreatingNewInvoice(!isCreatingNewInvoice);
     if (isDropdownOpen) setIsDropdownOpen(false);
@@ -33,27 +31,6 @@ const FilterSection: React.FC<FilterSectionProps> = ({
   const handleCloseNewInvoiceModal = () => {
     setIsCreatingNewInvoice(false);
   };
-
-  // const handleFilterSelect = (filter: string) => {
-  //   setSelectedFilter(() => {
-  //     if (selectedFilter.includes(filter)) {
-  //       return selectedFilter.filter((f) => f !== filter);
-  //     } else {
-  //       onFilterChange([...selectedFilter, filter?.toLowerCase()]);
-  //       return [...selectedFilter, filter?.toLowerCase()];
-  //     }
-  //   });
-  // };
-
-  // const handleFilterSelect = (filter: string) => {
-  //   setSelectedFilter((prevSelected) => {
-  //     const newSelected = prevSelected.includes(filter.toLowerCase())
-  //       ? prevSelected.filter((f) => f !== filter.toLowerCase())
-  //       : [...prevSelected, filter.toLowerCase()];
-  //     onFilterChange(newSelected); // Call onFilterChange with the updated array
-  //     return newSelected;
-  //   });
-  // };
 
   const handleFilterSelect = (filter: string) => {
     setSelectedFilter((prevSelected) => {
@@ -66,7 +43,10 @@ const FilterSection: React.FC<FilterSectionProps> = ({
   };
 
   return (
-    <div className={styles.filterSection}>
+    <div
+      className={`${styles.filterSection}
+     ${styles[darkMode ? "dark-mode" : "light-mode"]}`}
+    >
       <div className={styles.header}>
         <h1>Invoices</h1>
         <p>
@@ -87,30 +67,9 @@ const FilterSection: React.FC<FilterSectionProps> = ({
           {isDropdownOpen && (
             <ul className={styles.dropdown}>
               {filters.map((filter) => (
-                // <label
-                //   key={filter}
-                //   htmlFor="checkbox"
-                //   onClick={() => handleFilterSelect(filter?.toLowerCase())}
-                //   className={
-                //     selectedFilter.includes(filter?.toLowerCase())
-                //       ? styles.active
-                //       : ""
-                //   }
-                // >
-                //   <input
-                //     onChange={() => handleFilterSelect(filter?.toLowerCase())}
-                //     checked={selectedFilter.includes(filter?.toLowerCase())}
-                //     type="checkbox"
-                //     name="checkbox"
-                //     id=""
-                //   />
-                //   {filter}
-                // </label>
-
                 <label
                   key={filter}
                   htmlFor={filter.toLowerCase()}
-                  onClick={(e) => e.preventDefault()} // Prevent label click interference
                   className={
                     selectedFilter.includes(filter.toLowerCase())
                       ? styles.active
@@ -123,12 +82,14 @@ const FilterSection: React.FC<FilterSectionProps> = ({
                     checked={selectedFilter.includes(filter.toLowerCase())}
                     onChange={() => handleFilterSelect(filter)}
                   />
+
                   {filter}
                 </label>
               ))}
             </ul>
           )}
         </div>
+
         <button
           className={styles.newInvoiceButton}
           onClick={handleCreateNewInvoiceModal}

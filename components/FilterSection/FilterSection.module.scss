@@ -5,8 +5,32 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 0;
-
   width: 100%;
+
+  &.dark-mode {
+    .dropdown {
+      background-color: get-color(medium-blue);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+
+      label {
+        color: get-color(white);
+
+        input[type="checkbox"] {
+          border: 2px solid get-color(primary-purple);
+          background-color: get-color(medium-blue);
+
+          &:checked {
+            background-color: get-color(primary-purple);
+            border-color: get-color(primary-purple);
+          }
+        }
+
+        &:hover input[type="checkbox"]:not(:checked) {
+          border: 2px solid get-color(primary-purple);
+        }
+      }
+    }
+  }
 }
 
 .actions {
@@ -61,7 +85,7 @@
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   list-style: none;
-  padding: 25px;
+  padding: 25px 0;
   // margin: 5px 0 0;
   width: 192px;
   height: 128px;
@@ -72,16 +96,13 @@
   place-items: center;
   // gap: 10px;
 
-  &.dark-mode {
-    background-color: get-color(medium-blue);
-  }
-
   label {
-    width: 100%;
-    padding: 8px 15px;
+    width: 95%;
+    padding: 8px 5px;
     cursor: pointer;
     color: get-color(dark-blue);
     display: flex;
+    align-items: center;
     gap: 10px;
 
     &.dark-mode {
@@ -91,16 +112,12 @@
     input[type="checkbox"] {
       width: 20px;
       height: 20px;
+      margin-left: 15px;
       cursor: pointer;
       background-color: get-color(red);
       border-radius: 50%;
       border: 1px solid get-color(dark-gray);
       transition: var(--transition);
-
-      &.dark-mode {
-        background-color: get-color(medium-blue);
-        border: 1px solid get-color(light-gray);
-      }
     }
 
     &:hover {

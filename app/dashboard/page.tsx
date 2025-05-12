@@ -1,6 +1,5 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { apiService } from "@/apiServices";
 import FilterSection from "@/components/FilterSection";
@@ -11,7 +10,6 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import { Invoice, PaginatedInvoicesResponse } from "@/types";
 
 export default function Dashboard() {
-  const { data: session, status } = useSession();
   const loadMoreRef = useRef<HTMLDivElement>(null); // Ref for the load more trigger
 
   const {
