@@ -137,6 +137,7 @@ const InvoiceForm = ({
   };
 
   const handleSubmit = (action: "draft" | "pending") => {
+    if (!i?.id) return;
     const paymentTermsDays = parseInt(
       formData.paymentTerms.replace(/[^0-9]/g, ""),
       10
@@ -178,7 +179,13 @@ const InvoiceForm = ({
 
     switch (formAction) {
       case "EDIT":
-        updateInvoice({ invoice: payload, invoiceId: i?.id! });
+        if (!i || !i.id) {
+          console.error(
+            "Cannot update invoice: Initial data or invoice ID is missing"
+          );
+          return; // Prevent calling updateInvoice if I or I.id is undefined
+        }
+        updateInvoice({ invoice: payload, invoiceId: i.id });
         break;
       default:
         createInvoice(payload);
@@ -266,7 +273,7 @@ const InvoiceForm = ({
         <div className={styles.formSection}>
           <h3 className={styles.sectionHeader}>Bill To</h3>
           <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Client's Name</label>
+            <label className={styles.formLabel}>{`Client's Name`}</label>
             <input
               type="text"
               name="billToClientName"
@@ -275,7 +282,7 @@ const InvoiceForm = ({
             />
           </div>
           <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Client's Email</label>
+            <label className={styles.formLabel}>{`Client's Email`}</label>
             <input
               type="email"
               name="billToClientEmail"

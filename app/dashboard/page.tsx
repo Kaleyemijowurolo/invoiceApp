@@ -61,6 +61,8 @@ export default function Dashboard() {
 
   // IntersectionObserver logic
   useEffect(() => {
+    const current = loadMoreRef.current;
+
     const observer = new IntersectionObserver(
       (entries) => {
         const target = entries[0];
@@ -75,14 +77,14 @@ export default function Dashboard() {
       }
     );
 
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current);
+    if (current) {
+      observer.observe(current);
     }
 
     // Cleanup observer on unmount
     return () => {
-      if (loadMoreRef.current) {
-        observer.unobserve(loadMoreRef.current);
+      if (current) {
+        observer.unobserve(current);
       }
     };
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);

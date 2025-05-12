@@ -6,7 +6,6 @@ import { z } from "zod";
 import { useTheme } from "@/lib/context/ThemeContext";
 import styles from "./Auth.module.scss";
 import { SignupSchema } from "@/schema";
-import { set } from "mongoose";
 import { useMutation } from "@tanstack/react-query";
 import { apiService } from "@/apiServices";
 import { signIn } from "next-auth/react";
