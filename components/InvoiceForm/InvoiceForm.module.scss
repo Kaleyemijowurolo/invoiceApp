@@ -11,7 +11,10 @@
   .linear {
     display: none;
   }
+
+  color: get-color(light-gray) !important;
 }
+
 .newInvoiceForm {
   background-color: get-color(white);
   border-top-right-radius: 20px;
@@ -198,6 +201,11 @@
     &:focus {
       outline: none;
       border-color: get-color(primary-purple);
+    }
+
+    &:disabled {
+      cursor: not-allowed !important;
+      opacity: 0.7;
     }
   }
 

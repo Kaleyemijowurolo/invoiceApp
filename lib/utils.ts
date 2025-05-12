@@ -1,13 +1,5 @@
-// import { clsx, type ClassValue } from "clsx";
-// import { twMerge } from "tailwind-merge";
 import Invoice from "@/models/Invoice";
 import { v4 as uuidv4 } from "uuid";
-
-// export function cn(...inputs: ClassValue[]) {
-//   return twMerge(clsx(inputs));
-// }
-
-// =================================================
 
 // Generate unique invoice ID in format XX1234 (e.g., RG0314)
 export const generateInvoiceId = async (): Promise<string> => {
@@ -15,13 +7,32 @@ export const generateInvoiceId = async (): Promise<string> => {
   const maxRetries = 10; // Increased for better reliability
 
   for (let i = 0; i < maxRetries; i++) {
-    const uuid = uuidv4().replace(/-/g, ""); // New UUID each retry
-    const seed = parseInt(uuid.slice(0, 8), 16);
-    const randomIndex1 = seed % 26;
-    const randomIndex2 = (seed >> 4) % 26;
+    const uuid = uuidv4().replace(/-/g, ""); // Generate a new UUID
+    const seed = parseInt(uuid.slice(0, 8), 16); // First 8 hex chars as seed
+
+    // Validate seed
+    if (isNaN(seed)) {
+      console.warn("Invalid seed generated, retrying...", uuid.slice(0, 8));
+      continue;
+    }
+
+    // Generate two distinct random indices using seed
+    const randomIndex1 = seed % 26; // First letter index
+    let randomIndex2 = (((seed >> 8) % 26) + (seed % 13)) % 26; // Second letter index with variation
+
+    // Ensure indices are within bounds
+    // randomIndex1 = Math.max(0, Math.min(25, randomIndex1));
+    randomIndex2 = Math.max(0, Math.min(25, randomIndex2));
+
     const randomDigits = (seed % 10000).toString().padStart(4, "0"); // 0000-9999
 
     const id = letters[randomIndex1] + letters[randomIndex2] + randomDigits;
+
+    console.log(
+      `Attempt ${
+        i + 1
+      }: Seed=${seed}, Index1=${randomIndex1}, Index2=${randomIndex2}, ID=${id}`
+    ); // Debug
 
     // Check if ID is unique
     const existingInvoice = await Invoice.findOne({ id });
@@ -40,48 +51,6 @@ export function truncateText(text: string, maxLength: number) {
   return text?.slice(0, maxLength) + "...";
 }
 
-// =================================================
-
-export function generateYearsArray(startYear: number) {
-  const currentYear = new Date().getFullYear(); // Get the current year
-  return Array.from({ length: currentYear - startYear + 1 }, (_, i) =>
-    (startYear + i).toString()
-  ); // Generate the years array and stringify the items
-}
-
-// =================================================
-
-export default function generateUniqueReferralCode() {
-  return uuidv4().split("-")[0]; // Shorten UUID
-}
-
-// =================================================
-const date = new Date("2021-09-20T00:00:00.000Z");
-export const formattedDate = date.toLocaleDateString("en-GB", {
-  day: "2-digit",
-  month: "short",
-  year: "numeric",
-});
-
-export const formatDate = (dateString: string, showTime?: boolean) => {
-  if (!dateString) return "";
-  const date = new Date(dateString);
-
-  const options: Intl.DateTimeFormatOptions = {
-    month: "long",
-    year: "numeric",
-    day: "numeric", // Added day to the formatting options
-  };
-
-  // Conditionally add time formatting options
-  if (showTime) {
-    options.hour = "2-digit";
-    options.minute = "2-digit";
-  }
-
-  return new Intl.DateTimeFormat("en-US", options)?.format(date);
-};
-
 export const formatCurrency = (
   amount: number,
   currency: string = "NGN",
@@ -98,11 +67,3 @@ export const formatCurrency = (
     currency,
   }).format(amount);
 };
-
-// =================================================
-export function cleanName(name: string) {
-  return name
-    .replace(/\bundefined\b/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
-}

@@ -4,7 +4,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 import { getSession } from "next-auth/react";
-import { Invoice, PaginatedInvoicesResponse } from "@/types"; // Import the new interface
+import { Invoice, InvoicePayload, PaginatedInvoicesResponse } from "@/types"; // Import the new interface
 // Define your base URL for API requests within Next.js
 const api: AxiosInstance = axios.create({
   baseURL: "/api", // Next.js API routes
@@ -49,7 +49,7 @@ export const apiService = {
     return response.data;
   },
 
-  getAllInvoices: async (page: number = 1, limit: number = 20) => {
+  getAllInvoices: async (page: number = 1, limit: number = 10) => {
     const config: AxiosRequestConfig = {
       headers: {},
       params: { page, limit }, // Add pagination params
@@ -63,18 +63,32 @@ export const apiService = {
     return response.data;
   },
 
-  createInvoice: async (invoice: Invoice) => {
+  createInvoice: async (invoice: InvoicePayload) => {
     const response = await api.post(`/invoices`, invoice);
     return response.data;
   },
 
-  updateInvoice: async (invoiceId: string, invoice: Invoice) => {
+  updateInvoice: async ({
+    invoice,
+    invoiceId,
+  }: {
+    invoiceId: string;
+    invoice: InvoicePayload;
+  }) => {
     const response = await api.put(`/invoices/${invoiceId}`, invoice);
     return response.data;
   },
 
-  updateInvoiceStatus: async (invoiceId: string) => {
-    const response = await api.patch(`/invoices/${invoiceId}`);
+  updateInvoiceStatus: async ({
+    invoiceId,
+    status,
+  }: {
+    invoiceId: string;
+    status: "draft" | "pending" | "paid";
+  }) => {
+    const response = await api.patch(`/invoices/${invoiceId}/status`, {
+      status,
+    });
     return response.data;
   },
 

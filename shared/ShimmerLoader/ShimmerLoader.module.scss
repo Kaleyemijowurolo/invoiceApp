@@ -1,16 +1,24 @@
 @import "../../app/styles/global.scss";
 
 .shimmerWrapper {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+  width: 70%;
+  height: 90%;
 
   &.light-mode {
     background-color: get-color(light-bg);
+
+    .invoiceItemShimmer {
+      background: get-color(white);
+      box-shadow: 0 4px 8px rgba(get-color(dark-gray), 0.1);
+    }
   }
 
   &.dark-mode {
-    background-color: get-color(dark-bg);
+    .invoiceItemShimmer,
+    .filterSection {
+      background: get-color(medium-blue);
+      border: 1px solid transparent;
+    }
   }
 }
 
@@ -18,7 +26,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 0;
+  padding: 20px 10px;
 }
 
 .header {
@@ -138,14 +146,9 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   align-items: center;
-  padding: 15px;
+  padding: 0 10px;
+  height: 72px;
   border-radius: 8px;
-  background: get-color(white);
-  border: 1px solid get-color(gray);
-
-  &.dark-mode {
-    background: get-color(medium-blue);
-  }
 }
 
 .idShimmer,
@@ -207,6 +210,10 @@
 
 // Responsive design
 @include respond-to(mobile) {
+  .shimmerWrapper {
+    width: 100%;
+    padding: 5px;
+  }
   .filterSection {
     flex-direction: column;
     gap: 15px;
@@ -230,6 +237,10 @@
 }
 
 @include respond-to(tablet) {
+  .shimmerWrapper {
+    width: 100%;
+    padding: 5px;
+  }
   .filterSection {
     flex-direction: row;
     align-items: center;

@@ -46,14 +46,6 @@ $colors: (
 }
 
 
-// body {
-//   font-family: var(--font-family)!important;
-//   margin: 0;
-//   padding: 0;
-//   transition: var(--transition);
-
-  
-// }
 
 body {
   font-family: "League Spartan" !important;
@@ -112,6 +104,18 @@ body {
       border: none;
       // border: 2px solid get-color(light-bg);
     }
+  }
+  .modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    justify-content: start;
+    align-items: start;
   }
 }
 

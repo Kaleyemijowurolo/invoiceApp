@@ -1,35 +1,113 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import styles from "./NewInvoiceForm.module.scss";
+import { useState, useEffect, ReactNode } from "react";
+import styles from "./InvoiceForm.module.scss";
 import { useTheme } from "@/lib/context/ThemeContext";
 import TrashIcon from "../icons/TrashIcon";
-import { InvoiceFormData } from "@/types";
+import { InvoiceFormData, InvoicePayload } from "@/types";
+import { apiService } from "@/apiServices";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+
+// Key for localStorage
+const FORM_DATA_STORAGE_KEY = "invoiceFormData";
 
 interface FormProps {
   onDiscard: () => void;
-  formTitle?: string;
+  formTitle?: string | ReactNode;
   formAction?: "CREATE" | "EDIT";
+  initialData?: InvoicePayload;
 }
 
-const NewInvoiceForm = ({ onDiscard, formTitle, formAction }: FormProps) => {
+const InvoiceForm = ({
+  onDiscard,
+  formTitle,
+  formAction = "CREATE",
+  initialData: i,
+}: FormProps) => {
   const { darkMode } = useTheme();
-  const [formData, setFormData] = useState<InvoiceFormData>({
-    billFromStreet: "",
-    billFromCity: "",
-    billFromPostCode: "",
-    billFromCountry: "",
-    billToClientName: "",
-    billToClientEmail: "",
-    billToStreet: "",
-    billToCity: "",
-    billToPostCode: "",
-    billToCountry: "",
-    invoiceDate: new Date().toISOString().split("T")[0],
-    paymentTerms: "Net 30 Days",
-    projectDescription: "",
-    items: [{ name: "", quantity: 1, price: 0, total: 0 }],
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  // Load persisted data from localStorage on initial render
+  const getInitialFormData = (): InvoiceFormData => {
+    if (formAction === "EDIT" && i) {
+      return {
+        billFromStreet: i.senderAddress?.street || "",
+        billFromCity: i.senderAddress?.city || "",
+        billFromPostCode: i.senderAddress?.postCode || "",
+        billFromCountry: i.senderAddress?.country || "",
+        billToClientName: i.clientName || "",
+        billToClientEmail: i.clientEmail || "",
+        billToStreet: i.clientAddress?.street || "",
+        billToCity: i.clientAddress?.city || "",
+        billToPostCode: i.clientAddress?.postCode || "",
+        billToCountry: i.clientAddress?.country || "",
+        invoiceDate: i.createdAt || new Date().toISOString().split("T")[0],
+        paymentTerms: i.paymentTerms?.toString() || "Net 30 Days",
+        projectDescription: i.description || "",
+        items: i.items || [{ name: "", quantity: 1, price: 0, total: 0 }],
+      };
+    }
+
+    // Load from localStorage for CREATE, or use default if none
+    const savedData = localStorage.getItem(FORM_DATA_STORAGE_KEY);
+    if (savedData && formAction === "CREATE") {
+      return JSON.parse(savedData);
+    }
+
+    return {
+      billFromStreet: "",
+      billFromCity: "",
+      billFromPostCode: "",
+      billFromCountry: "",
+      billToClientName: "",
+      billToClientEmail: "",
+      billToStreet: "",
+      billToCity: "",
+      billToPostCode: "",
+      billToCountry: "",
+      invoiceDate: new Date().toISOString().split("T")[0],
+      paymentTerms: "Net 30 Days",
+      projectDescription: "",
+      items: [{ name: "", quantity: 1, price: 0, total: 0 }],
+    };
+  };
+
+  const [formData, setFormData] = useState<InvoiceFormData>(getInitialFormData);
+
+  // Persist formData to localStorage when it changes (only for CREATE)
+  useEffect(() => {
+    if (formAction === "CREATE" && !i) {
+      localStorage.setItem(FORM_DATA_STORAGE_KEY, JSON.stringify(formData));
+    }
+  }, [formData, formAction, i]);
+
+  const { mutateAsync: createInvoice, isPending: isCreating } = useMutation({
+    mutationKey: ["createInvoice"],
+    mutationFn: apiService.createInvoice,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getAllInvoices"] });
+      handleDiscard();
+    },
   });
+
+  const { mutateAsync: updateInvoice, isPending: isUpdating } = useMutation({
+    mutationKey: ["updateInvoice"],
+    mutationFn: apiService.updateInvoice,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["getAllInvoices", "getSingleInvoice"],
+      });
+      handleDiscard();
+      router.refresh();
+    },
+  });
+
+  const handleDiscard = () => {
+    localStorage.removeItem(FORM_DATA_STORAGE_KEY);
+    onDiscard();
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -58,17 +136,60 @@ const NewInvoiceForm = ({ onDiscard, formTitle, formAction }: FormProps) => {
     }));
   };
 
-  const handleSubmit = (action: string) => {
-    console.log("Form Data:", formData);
-    console.log(`Action: ${action}`);
-    console.log(`Form Action: ${formAction}`);
-    // Add save logic here (e.g., API call)
+  const handleSubmit = (action: "draft" | "pending") => {
+    const paymentTermsDays = parseInt(
+      formData.paymentTerms.replace(/[^0-9]/g, ""),
+      10
+    );
+
+    const invoiceDate = new Date(formData.invoiceDate);
+    const paymentDueDate = new Date(invoiceDate);
+    paymentDueDate.setDate(invoiceDate.getDate() + paymentTermsDays);
+    const paymentDue = paymentDueDate.toISOString().split("T")[0];
+
+    const total = formData.items.reduce((sum, item) => sum + item.total, 0);
+    const payload = {
+      senderAddress: {
+        street: formData.billFromStreet,
+        city: formData.billFromCity,
+        postCode: formData.billFromPostCode,
+        country: formData.billFromCountry,
+      },
+      clientAddress: {
+        street: formData.billToStreet,
+        city: formData.billToCity,
+        postCode: formData.billToPostCode,
+        country: formData.billToCountry,
+      },
+      clientName: formData.billToClientName,
+      clientEmail: formData.billToClientEmail,
+      paymentDue,
+      paymentTerms: paymentTermsDays,
+      description: formData.projectDescription,
+      status: action,
+      items: formData.items.map((item) => ({
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+        total: item.total,
+      })),
+      total,
+    };
+
+    switch (formAction) {
+      case "EDIT":
+        updateInvoice({ invoice: payload, invoiceId: i?.id! });
+        break;
+      default:
+        createInvoice(payload);
+        break;
+    }
   };
 
   const handleDeleteItem = (itemIdx: number) => {
     setFormData((prev) => ({
       ...prev,
-      items: formData?.items?.filter((_, i) => i !== itemIdx),
+      items: formData.items.filter((_, i) => i !== itemIdx),
     }));
   };
 
@@ -78,8 +199,9 @@ const NewInvoiceForm = ({ onDiscard, formTitle, formAction }: FormProps) => {
         styles[darkMode ? "dark-mode" : "light-mode"]
       }`}
     >
+      {isUpdating || (isCreating && <div className="modal"></div>)}
       <div className={styles.formContainer}>
-        <button onClick={onDiscard} className={styles.goBack}>
+        <button onClick={handleDiscard} className={styles.goBack}>
           <svg
             width="7"
             height="11"
@@ -212,6 +334,7 @@ const NewInvoiceForm = ({ onDiscard, formTitle, formAction }: FormProps) => {
                 name="invoiceDate"
                 value={formData.invoiceDate}
                 onChange={handleInputChange}
+                disabled={formAction === "EDIT"}
               />
             </div>
             <div>
@@ -238,7 +361,6 @@ const NewInvoiceForm = ({ onDiscard, formTitle, formAction }: FormProps) => {
             />
           </div>
         </div>
-        {/* Item list */}
 
         <div className={`${styles.formSection} ${styles.itemList}`}>
           <h3 className={styles.sectionHeader}>Item List</h3>
@@ -248,13 +370,14 @@ const NewInvoiceForm = ({ onDiscard, formTitle, formAction }: FormProps) => {
                 <label className={styles.formLabel}>Item Name</label>
                 <input
                   type="text"
+                  required
                   name="name"
                   value={item.name}
                   onChange={(e) => handleItemChange(index, e)}
                 />
               </div>
               <div className={styles.itemDetails}>
-                <div className={`${styles.formGroup}  ${styles.qty} `}>
+                <div className={`${styles.formGroup} ${styles.qty}`}>
                   <label className={styles.formLabel}>Qty.</label>
                   <input
                     type="number"
@@ -262,6 +385,7 @@ const NewInvoiceForm = ({ onDiscard, formTitle, formAction }: FormProps) => {
                     value={item.quantity}
                     onChange={(e) => handleItemChange(index, e)}
                     min="1"
+                    required
                   />
                 </div>
                 <div className={`${styles.formGroup} ${styles.price}`}>
@@ -273,6 +397,7 @@ const NewInvoiceForm = ({ onDiscard, formTitle, formAction }: FormProps) => {
                     onChange={(e) => handleItemChange(index, e)}
                     step="0.01"
                     min="0"
+                    required
                   />
                 </div>
                 <div className={`${styles.formGroup} ${styles.total}`}>
@@ -282,11 +407,8 @@ const NewInvoiceForm = ({ onDiscard, formTitle, formAction }: FormProps) => {
                 <div className={`${styles.formGroup} ${styles.trash}`}>
                   <label
                     className={styles.formLabel}
-                    style={{
-                      visibility: "hidden",
-                    }}
+                    style={{ visibility: "hidden" }}
                   >
-                    {" "}
                     {"Delete"}
                   </label>
                   <button
@@ -309,25 +431,48 @@ const NewInvoiceForm = ({ onDiscard, formTitle, formAction }: FormProps) => {
 
           <div className={styles.buttonGroupContainer}>
             <div className={styles.buttonGroup}>
-              <button
-                className={`${styles.button} ${styles.discard}`}
-                onClick={onDiscard}
-              >
-                Discard
-              </button>
+              {formAction === "EDIT" ? (
+                <div></div>
+              ) : (
+                <button
+                  className={`${styles.button} ${styles.discard}`}
+                  onClick={handleDiscard}
+                >
+                  Discard
+                </button>
+              )}
+
               <div className={styles.saveButtons}>
-                <button
-                  className={`${styles.button} ${styles.saveDraft}`}
-                  onClick={() => handleSubmit("saveDraft")}
-                >
-                  Save as Draft
-                </button>
-                <button
-                  className={`${styles.button} ${styles.saveSend}`}
-                  onClick={() => handleSubmit("saveSend")}
-                >
-                  Save & Send
-                </button>
+                {formAction === "EDIT" ? (
+                  <button
+                    className={`${styles.button} ${styles.discard}`}
+                    onClick={handleDiscard}
+                  >
+                    Cancel
+                  </button>
+                ) : (
+                  <button
+                    className={`${styles.button} ${styles.saveDraft}`}
+                    onClick={() => handleSubmit("draft")}
+                  >
+                    Save as Draft
+                  </button>
+                )}
+                {formAction === "EDIT" ? (
+                  <button
+                    className={`${styles.button} ${styles.saveSend}`}
+                    onClick={() => handleSubmit("pending")}
+                  >
+                    Save Changes
+                  </button>
+                ) : (
+                  <button
+                    className={`${styles.button} ${styles.saveSend}`}
+                    onClick={() => handleSubmit("pending")}
+                  >
+                    Save & Send
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -337,4 +482,4 @@ const NewInvoiceForm = ({ onDiscard, formTitle, formAction }: FormProps) => {
   );
 };
 
-export default NewInvoiceForm;
+export default InvoiceForm;

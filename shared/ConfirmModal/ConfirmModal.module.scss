@@ -1,0 +1,166 @@
+@import "../../app/styles/global.scss";
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); // Semi-transparent overlay
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+
+  &.dark-mode {
+    .modalContent {
+      background-color: get-color(dark-blue);
+      .title {
+        color: get-color(white);
+      }
+
+      .description {
+        color: get-color(light-gray);
+      }
+
+      .button {
+        &.cancel {
+          background-color: get-color(medium-blue);
+          color: get-color(light-gray);
+
+          &:hover {
+            background-color: darken(get-color(medium-blue), 5%);
+          }
+        }
+      }
+    }
+  }
+
+  &.light-mode {
+    .modalContent {
+      background-color: get-color(white);
+    }
+  }
+}
+
+.modalContent {
+  border-radius: 8px;
+  padding: 32px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  .title {
+    font-family: var(--font-family);
+    font-size: 20px;
+    font-weight: 700;
+    color: get-color(dark-blue);
+    margin-bottom: 16px;
+  }
+
+  .description {
+    font-family: var(--font-family);
+    font-size: 14px;
+    font-weight: 500;
+    color: get-color(gray);
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+
+  .buttonGroup {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+
+    .button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 24px;
+      font-family: var(--font-family);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      &.cancel {
+        background-color: get-color(light-bg);
+        color: get-color(dark-blue);
+
+        &:hover {
+          background-color: get-color(gray-light);
+        }
+      }
+
+      &.delete {
+        background-color: get-color(red);
+        color: get-color(white);
+
+        &:hover {
+          background-color: darken(get-color(red), 10%);
+        }
+      }
+      &.update {
+        background-color: get-color(primary-purple);
+        color: get-color(white);
+
+        &:hover {
+          background-color: darken(get-color(primary-purple), 5%);
+        }
+      }
+    }
+  }
+
+  &.dark-mode {
+    background-color: get-color(dark-blue);
+
+    .title {
+      color: get-color(white);
+    }
+
+    .description {
+      color: get-color(light-gray);
+    }
+
+    .button {
+      &.cancel {
+        background-color: get-color(dark-gray);
+        color: get-color(light-gray);
+
+        &:hover {
+          background-color: get-color(gray);
+        }
+      }
+
+      &.confirm {
+        background-color: get-color(red);
+        color: get-color(white);
+
+        &:hover {
+          background-color: darken(get-color(red), 10%);
+        }
+      }
+    }
+  }
+
+  &.light-mode {
+    background-color: get-color(white);
+  }
+}
+
+@include respond-to(mobile) {
+  .modalContent {
+    padding: 24px;
+    max-width: 90%;
+    margin: 0 16px;
+
+    .buttonGroup {
+      flex-direction: column;
+      gap: 8px;
+
+      .button {
+        width: 100%;
+        padding: 12px;
+      }
+    }
+  }
+}

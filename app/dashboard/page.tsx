@@ -1,81 +1,95 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { apiService } from "@/apiServices";
 import FilterSection from "@/components/FilterSection";
 import InvoiceList from "@/components/InvoiceList";
-import ShimmerLoader from "@/components/ShimmerLoader";
-import styles from "./Dashboard.module.scss";
-import { useEffect, useMemo, useState } from "react";
+import ShimmerLoader from "@/shared/ShimmerLoader";
+import styles from "../styles/Dashboard.module.scss";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { Invoice, PaginatedInvoicesResponse } from "@/types";
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
-  // const { data: session, status } = useSession({
-  //   required: true,
-  //   onUnauthenticated() {
-  //     window.location.href = "/auth/signin";
-  //   },
-  // });
+  const loadMoreRef = useRef<HTMLDivElement>(null); // Ref for the load more trigger
 
-  const { data, isLoading, error } = useQuery<PaginatedInvoicesResponse>({
-    queryKey: ["invoices"],
-    queryFn: () => apiService.getAllInvoices(),
-    // enabled: status === "authenticated",
-    // staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    error,
+  } = useInfiniteQuery<PaginatedInvoicesResponse>({
+    queryKey: ["getAllInvoices"],
+    queryFn: ({ pageParam = 1 }) =>
+      apiService.getAllInvoices(pageParam as number, 10),
+    getNextPageParam: (lastPage, allPages) => {
+      const totalPages = Math.ceil(lastPage.total / 10);
+      const nextPage = allPages?.length + 1;
+      return nextPage <= totalPages ? nextPage : undefined;
+    },
+    initialPageParam: 1,
   });
 
-  console.log(data, "invoices in db");
+  // Flatten the paginated data into a single array of invoices
+  const allInvoices = useMemo(() => {
+    return data?.pages.flatMap((page) => page.invoices) || [];
+  }, [data]);
 
-  const invoices = data?.invoices || [];
-
-  console.log(invoices, "invoices var");
-
-  const [initialInvoices, setFilteredInvoices] = useState<Invoice[]>(
-    data?.invoices || []
-  );
+  const [filteredInvoices, setFilteredInvoices] =
+    useState<Invoice[]>(allInvoices);
 
   useEffect(() => {
-    if (data) {
-      setFilteredInvoices(data.invoices);
-    }
-  }, [data?.invoices]);
+    setFilteredInvoices(allInvoices);
+  }, [allInvoices]);
 
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
 
   const handleFilterChange = (status: string[]) => {
-    setSelectedStatuses(status); // Update the selected statuses state
+    setSelectedStatuses(status);
   };
 
-  // Memoize filteredInvoices to avoid unnecessary recalculations
-  const filteredInvoices = useMemo(() => {
+  // Apply client-side filtering
+  const displayedInvoices = useMemo(() => {
     if (selectedStatuses.length === 0) {
-      return initialInvoices; // Return all invoices if no filters are selected
+      return filteredInvoices;
     }
-    return initialInvoices.filter((invoice) =>
+    return filteredInvoices.filter((invoice) =>
       selectedStatuses.includes(invoice.status)
     );
-  }, [initialInvoices, selectedStatuses]);
+  }, [filteredInvoices, selectedStatuses]);
 
-  console.log(filteredInvoices, "filteredInvoices");
-  // const handleFilterChange = (status: string[]) => {
-  //   if (status.length === 0) {
-  //     setFilteredInvoices(invoices); // Show all invoices if no filters
-  //   } else {
-  //     setFilteredInvoices(
-  //       invoices.filter((invoice) => status.includes(invoice.status))
-  //     );
-  //   }
-  // };
+  // IntersectionObserver logic
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0];
+        if (target.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      {
+        root: null, // Use the viewport as the root
+        rootMargin: "20px", // Trigger 20px before the element is fully in view
+        threshold: 1.0, // Trigger when 100% of the target is visible
+      }
+    );
 
-  if (
-    status === "loading" ||
-    isLoading
-    // ||
-    // (!error && filteredInvoices?.length === 0)
-  )
-    return <ShimmerLoader />;
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    // Cleanup observer on unmount
+    return () => {
+      if (loadMoreRef.current) {
+        observer.unobserve(loadMoreRef.current);
+      }
+    };
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  if (isLoading) return <ShimmerLoader />;
   if (error)
     return (
       <div className={styles.error}>Error: {(error as Error).message}</div>
@@ -84,13 +98,22 @@ export default function Dashboard() {
   return (
     <div className={styles.dashboard}>
       <FilterSection
-        invoiceCount={data?.total || 0}
+        invoiceCount={data?.pages[0]?.total || 0}
         onFilterChange={handleFilterChange}
       />
-
       <br />
       <div className={styles.invoiceListContainer}>
-        <InvoiceList isLoading={isLoading} invoices={filteredInvoices} />
+        <InvoiceList
+          totalItems={data?.pages[0]?.total || 0}
+          isLoading={isLoading}
+          invoices={displayedInvoices}
+        />
+        <div ref={loadMoreRef} style={{ height: "20px" }}>
+          {isFetchingNextPage && <ShimmerLoader />}
+          {!hasNextPage && displayedInvoices.length > 0 && (
+            <p className={styles.noMore}>No more invoices to load</p>
+          )}
+        </div>
       </div>
     </div>
   );

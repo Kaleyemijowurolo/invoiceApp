@@ -7,6 +7,8 @@ import { useTheme } from "@/lib/context/ThemeContext";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiService } from "@/apiServices";
+import ConfirmModal from "@/shared/ConfirmModal";
+import InvoiceForm from "../InvoiceForm";
 
 const InvoiceDetails = ({ invoice: i }: { invoice: Invoice }) => {
   const { darkMode } = useTheme();
@@ -17,32 +19,46 @@ const InvoiceDetails = ({ invoice: i }: { invoice: Invoice }) => {
     mutationKey: ["deleteInvoice"],
     mutationFn: () => apiService.deleteInvoice(i?.id),
     onSuccess: () => {
+      setIsDeleteModalOpen(false);
       queryClient.invalidateQueries({ queryKey: ["getAllInvoices"] });
       router.replace("/dashboard");
     },
   });
 
-  const [isEditModal, setIsEditModal] = useState(false);
+  const { mutateAsync: updateInvoiceStatus, isPending: isUpdating } =
+    useMutation({
+      mutationKey: ["updateInvoiceStatus"],
+      mutationFn: () =>
+        apiService.updateInvoiceStatus({ invoiceId: i?.id, status: "paid" }),
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["getAllInvoices", "getSingleInvoice"],
+        });
+        router.refresh();
+        setIsUpdateModalOpen(false);
+      },
+    });
+
+  // const [isEditModal, setIsEditModal] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [isEditingInvoiceModalOpen, setIsEditingInvoiceModalOpen] =
+    useState(false);
 
   const handleGoBack = () => {
-    router.back();
+    router.push("/dashboard");
   };
 
   const handleEdit = () => {
-    setIsEditModal(!isEditModal);
+    setIsEditingInvoiceModalOpen(!isEditingInvoiceModalOpen);
   };
 
-  // const handleDelete = () => {
-  //   console.log("Delete i");
-  //   try{
-  //     deleteInvoice()
-  //   }catch(error){}
-  //   // Add delete logic here
-  // };
+  const handleDelete = () => {
+    setIsDeleteModalOpen(true); // Open the modal
+  };
 
   const handleMarkAsPaid = () => {
-    console.log("Mark as paid");
-    // Add mark as paid logic here
+    setIsUpdateModalOpen(true);
   };
 
   // Format the paymentDue date
@@ -58,7 +74,7 @@ const InvoiceDetails = ({ invoice: i }: { invoice: Invoice }) => {
 
   return (
     <div className={styles.invoiceDetailContainer}>
-      {isDeleting && <div className={styles.overlay}></div>}
+      {(isDeleting || isUpdating) && <div className={styles.overlay}></div>}
       <div
         className={`${styles.invoiceDetails} ${
           styles[darkMode ? "dark-mode" : "light-mode"]
@@ -93,19 +109,20 @@ const InvoiceDetails = ({ invoice: i }: { invoice: Invoice }) => {
             <button
               className={`${styles.button} ${styles.edit}`}
               onClick={handleEdit}
+              disabled={i?.status === "paid"}
             >
               Edit
             </button>
             <button
               className={`${styles.button} ${styles.delete}`}
-              onClick={() => deleteInvoice()}
-              // onClick={handleDelete}
+              onClick={handleDelete}
             >
               Delete
             </button>
             <button
               className={`${styles.button} ${styles.markPaid}`}
               onClick={handleMarkAsPaid}
+              disabled={i?.status === "paid"}
             >
               Mark as Paid
             </button>
@@ -123,7 +140,7 @@ const InvoiceDetails = ({ invoice: i }: { invoice: Invoice }) => {
             </button>
             <button
               className={`${styles.button} ${styles.delete}`}
-              onClick={() => deleteInvoice()}
+              onClick={handleDelete}
             >
               Delete
             </button>
@@ -203,6 +220,37 @@ const InvoiceDetails = ({ invoice: i }: { invoice: Invoice }) => {
           </div>
         </div>
       </div>
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={() => deleteInvoice()}
+        title="Confirm Deletion"
+        description={`Are you sure you want to delete invoice #${i?.id}? This action cannot be undone.`}
+      />
+      <ConfirmModal
+        isOpen={isUpdateModalOpen}
+        onClose={() => setIsUpdateModalOpen(false)}
+        onConfirm={() => updateInvoiceStatus()}
+        type="update"
+        title="Confirm Update"
+        confirmLabel="Mark as Paid"
+        description={`Are you sure you want to mark invoice #${i?.id} as paid?`}
+      />
+      {isEditingInvoiceModalOpen && (
+        <div className={"modal"}>
+          <InvoiceForm
+            formAction="EDIT"
+            formTitle={
+              <span className={styles.editModalId}>
+                Edit <span>#</span>
+                {i?.id}
+              </span>
+            }
+            onDiscard={handleEdit}
+            initialData={i}
+          />
+        </div>
+      )}
     </div>
   );
 };

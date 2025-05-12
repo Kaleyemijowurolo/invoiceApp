@@ -1,8 +1,15 @@
+"use client";
+import { useTheme } from "@/lib/context/ThemeContext";
 import styles from "./ShimmerLoader.module.scss";
 
 const ShimmerLoader: React.FC = () => {
+  const { darkMode } = useTheme();
   return (
-    <div className={styles.shimmerWrapper}>
+    <div
+      className={`${styles.shimmerWrapper} ${
+        styles[darkMode ? "dark-mode" : "light-mode"]
+      }`}
+    >
       {/* Mimic FilterSection */}
       <div className={styles.filterSection}>
         <div className={styles.header}>
@@ -15,7 +22,7 @@ const ShimmerLoader: React.FC = () => {
 
       {/* Mimic InvoiceList */}
       <div className={styles.invoiceList}>
-        {[...Array(3)].map((_, index) => (
+        {[...Array(8)].map((_, index) => (
           <div key={index} className={styles.invoiceItemShimmer}>
             <div className={styles.idShimmer}></div>
             <div className={styles.clientNameShimmer}></div>

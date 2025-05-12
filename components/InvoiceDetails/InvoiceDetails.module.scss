@@ -8,6 +8,17 @@
   max-width: 800px;
   height: 100%;
 
+  .editModalId {
+    font-weight: 800;
+    font-size: large;
+
+    span {
+      color: get-color(blue-gray);
+      font-weight: bolder;
+      font-size: large;
+    }
+  }
+
   @include respond-to(mobile) {
     display: flex;
     align-items: start;
@@ -217,7 +228,7 @@
         font-weight: 700;
         transition: opacity 0.3s;
 
-        &:hover {
+        &:hover:not(:disabled) {
           opacity: 0.9;
         }
 
@@ -226,9 +237,18 @@
           color: get-color(white);
         }
 
+        &:disabled {
+          background-color: get-color(light-gray) !important;
+        }
+
         &.markPaid {
           background-color: get-color(primary-purple);
           color: get-color(white);
+        }
+
+        .button:disabled {
+          background-color: get-color(light-gray) !important;
+          cursor: not-allowed !important;
         }
       }
     }
