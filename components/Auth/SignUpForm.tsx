@@ -31,26 +31,7 @@ export default function SignUpForm() {
     mutationFn: apiService.signup,
     mutationKey: ["signup"],
     onSuccess: async (data) => {
-      console.log("Signup successful:", data);
-
-      const options = {
-        redirect: false,
-        email: formData.email,
-        password: formData.password,
-      };
-
-      const result = await signIn("credentials", options);
-      if (result?.error) {
-        if (result.status === 401) {
-          setError("User does not exist");
-        } else if (result.status === 500) {
-          setError("Network error! try again");
-          setLoading(false);
-          return router.push("/auth/signin");
-        }
-      } else {
-        router.push("/dashboard"); // Redirect after successful login
-      }
+      return router.push("/auth/signin");
     },
     onError: (error) => {
       console.error("Signup failed:", error);
