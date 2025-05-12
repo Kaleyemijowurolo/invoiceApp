@@ -42,12 +42,21 @@ const InvoiceSchema = new Schema(
       ref: "User",
       required: true,
     },
+    isSeed: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   {
     timestamps: true, // Add createdAt and updatedAt fields
   }
 );
+
+// Add indexes for better query performance
+InvoiceSchema.index({ createdBy: 1 });
+InvoiceSchema.index({ id: 1 });
+InvoiceSchema.index({ isSeed: 1 });
 
 export default mongoose.models.Invoice ||
   mongoose.model("Invoice", InvoiceSchema);

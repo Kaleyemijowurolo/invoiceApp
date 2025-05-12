@@ -30,7 +30,13 @@ export async function GET(
       return NextResponse.json({ error: "User ID not found" }, { status: 401 });
     }
 
-    const invoice = await Invoice.findOne({ id: id, createdBy: userId });
+    const invoice = await await Invoice.findOne({
+      id: id,
+      $or: [
+        { createdBy: userId }, // User's own invoice
+        { isSeed: true }, // Seed data invoice
+      ],
+    });
     if (!invoice) {
       return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
     }
@@ -61,12 +67,19 @@ export async function PUT(
     const validatedData = UpdateInvoiceSchema.parse(body);
 
     const invoice = await Invoice.findOneAndUpdate(
-      { id: id, createdBy: userId },
+      {
+        id: id,
+        $or: [
+          { createdBy: userId }, // User's own invoice
+          { isSeed: true }, // Seed data invoice
+        ],
+      },
       validatedData,
       {
         new: true,
       }
     );
+
     if (!invoice) {
       return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
     }
@@ -101,7 +114,10 @@ export async function DELETE(
 
     const invoice = await Invoice.findOneAndDelete({
       id: id,
-      createdBy: userId,
+      $or: [
+        { createdBy: userId }, // User's own invoice
+        { isSeed: true }, // Seed data invoice
+      ],
     });
     if (!invoice) {
       return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
