@@ -1,16 +1,32 @@
 @import "../../app/styles/global.scss";
 
 .invoiceList {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+  display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 10px;
+  height: max-content;
   overflow-y: auto !important;
   overflow-x: hidden;
   padding: 10px 3px 20px 3px;
+
+  // display: grid;
+  // grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+  // flex-direction: column;
+  // align-items: flex-start;
+  // justify-content: center;
+  // flex: 1;
+  // overflow-y: auto !important;
+  // overflow-x: hidden;
+  // padding: 10px 3px 20px 3px;
+  // border: solid red;
 }
+
+// .invoiceListItems {
+//   border: solid red;
+//   height: max-content;
+// }
 
 .noInvoices {
   text-align: center;

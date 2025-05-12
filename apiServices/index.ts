@@ -49,7 +49,7 @@ export const apiService = {
     return response.data;
   },
 
-  getAllInvoices: async (page: number = 1, limit: number = 10) => {
+  getAllInvoices: async (page: number = 1, limit: number = 20) => {
     const config: AxiosRequestConfig = {
       headers: {},
       params: { page, limit }, // Add pagination params

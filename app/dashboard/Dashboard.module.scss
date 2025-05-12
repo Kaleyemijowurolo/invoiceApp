@@ -3,6 +3,7 @@
 .dashboard {
   width: 70%;
   height: 90%;
+
   display: flex;
   flex-direction: column;
   &.light-mode {
@@ -13,6 +14,12 @@
   &.dark-mode {
     background-color: get-color(dark-bg);
     color: get-color(light-gray);
+  }
+
+  .invoiceListContainer {
+    height: 90%;
+    overflow-y: auto;
+    padding: 5px 0 20px 0;
   }
 }
 

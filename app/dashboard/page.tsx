@@ -87,9 +87,11 @@ export default function Dashboard() {
         invoiceCount={data?.total || 0}
         onFilterChange={handleFilterChange}
       />
-      <br />
 
-      <InvoiceList isLoading={isLoading} invoices={filteredInvoices} />
+      <br />
+      <div className={styles.invoiceListContainer}>
+        <InvoiceList isLoading={isLoading} invoices={filteredInvoices} />
+      </div>
     </div>
   );
 }
