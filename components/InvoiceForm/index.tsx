@@ -137,7 +137,6 @@ const InvoiceForm = ({
   };
 
   const handleSubmit = (action: "draft" | "pending") => {
-    if (!i?.id) return;
     const paymentTermsDays = parseInt(
       formData.paymentTerms.replace(/[^0-9]/g, ""),
       10

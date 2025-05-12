@@ -8,7 +8,6 @@ import styles from "./Auth.module.scss";
 import { SignupSchema } from "@/schema";
 import { useMutation } from "@tanstack/react-query";
 import { apiService } from "@/apiServices";
-import { signIn } from "next-auth/react";
 import EyeSlashIcon from "../icons/EyeSlashIcon";
 import EyeIcon from "../icons/EyeIcon";
 
@@ -30,7 +29,7 @@ export default function SignUpForm() {
   const { mutateAsync } = useMutation({
     mutationFn: apiService.signup,
     mutationKey: ["signup"],
-    onSuccess: async (data) => {
+    onSuccess: async () => {
       return router.push("/auth/signin");
     },
     onError: (error) => {

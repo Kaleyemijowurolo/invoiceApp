@@ -6,18 +6,31 @@ import dbConnect from "@/lib/mongodb";
 import { UpdateInvoiceSchema } from "@/schema";
 import { authMiddleware } from "@/lib/authMiddleware";
 
+interface AuthenticatedRequest extends NextRequest {
+  user?: {
+    id: string;
+    [key: string]: unknown;
+  };
+}
+
 export async function GET(
-  request: NextRequest,
+  req: AuthenticatedRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
 
   // Check authentication
-  const authError = await authMiddleware(request);
+  const authError = await authMiddleware(req);
   if (authError) return authError;
   try {
     await dbConnect();
-    const invoice = await Invoice.findOne({ id: id });
+
+    const userId = req.user?.id;
+    if (!userId) {
+      return NextResponse.json({ error: "User ID not found" }, { status: 401 });
+    }
+
+    const invoice = await Invoice.findOne({ id: id, createdBy: userId });
     if (!invoice) {
       return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
     }
@@ -29,7 +42,7 @@ export async function GET(
 }
 
 export async function PUT(
-  req: NextRequest,
+  req: AuthenticatedRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
@@ -38,12 +51,22 @@ export async function PUT(
   if (authError) return authError;
   try {
     await dbConnect();
+
+    const userId = req.user?.id;
+    if (!userId) {
+      return NextResponse.json({ error: "User ID not found" }, { status: 401 });
+    }
+
     const body = await req.json();
     const validatedData = UpdateInvoiceSchema.parse(body);
 
-    const invoice = await Invoice.findOneAndUpdate({ id: id }, validatedData, {
-      new: true,
-    });
+    const invoice = await Invoice.findOneAndUpdate(
+      { id: id, createdBy: userId },
+      validatedData,
+      {
+        new: true,
+      }
+    );
     if (!invoice) {
       return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
     }
@@ -61,7 +84,7 @@ export async function PUT(
 }
 
 export async function DELETE(
-  req: NextRequest,
+  req: AuthenticatedRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
@@ -70,7 +93,16 @@ export async function DELETE(
   if (authError) return authError;
   try {
     await dbConnect();
-    const invoice = await Invoice.findOneAndDelete({ id: id });
+
+    const userId = req.user?.id;
+    if (!userId) {
+      return NextResponse.json({ error: "User ID not found" }, { status: 401 });
+    }
+
+    const invoice = await Invoice.findOneAndDelete({
+      id: id,
+      createdBy: userId,
+    });
     if (!invoice) {
       return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
     }

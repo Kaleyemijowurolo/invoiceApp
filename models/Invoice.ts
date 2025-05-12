@@ -22,7 +22,7 @@ const ItemSchema = new Schema(
 
 const InvoiceSchema = new Schema(
   {
-    id: { type: String, required: true, uniques: true }, // Custom ID like "RT3080"
+    id: { type: String, required: true, unique: true }, // Custom ID like "RT3080"
     paymentDue: { type: Date, required: true },
     description: { type: String, required: true },
     paymentTerms: { type: Number, required: true },
@@ -37,10 +37,16 @@ const InvoiceSchema = new Schema(
     clientAddress: { type: AddressSchema, required: true },
     items: [{ type: ItemSchema, required: true }],
     total: { type: Number, required: true },
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
+
   {
     timestamps: true, // Add createdAt and updatedAt fields
-  } // Disable _id
+  }
 );
 
 export default mongoose.models.Invoice ||

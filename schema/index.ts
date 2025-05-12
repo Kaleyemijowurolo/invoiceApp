@@ -32,6 +32,7 @@ export const CreateInvoiceSchema = z.object({
     )
     .min(1),
   total: z.number().min(0),
+  createdBy: z.string().optional(),
 });
 
 export const UpdateInvoiceSchema = z.object({

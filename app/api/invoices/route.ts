@@ -5,17 +5,33 @@ import { InvoiceQuerySchema, CreateInvoiceSchema } from "@/schema";
 import { generateInvoiceId } from "@/lib/utils";
 import { authMiddleware } from "@/lib/authMiddleware";
 
-export async function POST(req: NextRequest) {
+interface AuthenticatedRequest extends NextRequest {
+  user?: {
+    id: string;
+    [key: string]: unknown;
+  };
+}
+
+export async function POST(req: AuthenticatedRequest) {
   // Check authentication
   const authError = await authMiddleware(req);
   if (authError) return authError;
 
   try {
     await dbConnect();
+
+    const userId = req.user?.id;
+    if (!userId) {
+      return NextResponse.json({ error: "User ID not found" }, { status: 401 });
+    }
+
     const body = await req.json();
 
     // Validate request body
-    const validatedData = CreateInvoiceSchema.safeParse(body);
+    const validatedData = CreateInvoiceSchema.safeParse({
+      ...body,
+      createdBy: userId,
+    });
     if (!validatedData.success) {
       return NextResponse.json(
         { error: validatedData.error.errors },
@@ -39,11 +55,16 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET(req: NextRequest) {
+export async function GET(req: AuthenticatedRequest) {
   try {
     // Check authentication
     const authError = await authMiddleware(req);
     if (authError) return authError;
+
+    const userId = req?.user?.id;
+    if (!userId) {
+      return NextResponse.json({ error: "User ID not found" }, { status: 401 });
+    }
 
     await dbConnect();
 
@@ -66,8 +87,13 @@ export async function GET(req: NextRequest) {
 
     const { status, page, limit } = validatedParams.data;
 
-    // Build query
-    const query = status ? { status: { $in: status } } : {};
+    // Build query with user filter
+    const query: { createdBy: string; status?: { $in: string[] } } = {
+      createdBy: userId,
+    };
+    if (status) {
+      query.status = { $in: status };
+    }
 
     // Fetch paginated invoices and total count
     const [invoices, total] = await Promise.all([

@@ -6,6 +6,7 @@ import styles from "./InvoiceList.module.scss";
 import InvoiceCardMobile from "../InvoiceCardMobile";
 import React from "react";
 import NoInvoiceIcon from "../icons/NoInvoiceIcon";
+import { useTheme } from "@/lib/context/ThemeContext";
 
 interface InvoiceListProps {
   invoices: Invoice[];
@@ -18,8 +19,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   isLoading,
   totalItems,
 }) => {
-  console.log(invoices, "invoices in InvoiceList");
-
+  const { darkMode } = useTheme();
   const [isMobile, setIsMobile] = React.useState(false);
 
   React.useEffect(() => {
@@ -32,7 +32,11 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   }, []);
 
   return (
-    <div className={styles.invoiceList}>
+    <div
+      className={`${styles.invoiceList} ${
+        styles[darkMode ? "dark-mode" : "light-mode"]
+      }`}
+    >
       {!isLoading && totalItems === 0 ? (
         <div className={styles.noInvoices}>
           <NoInvoiceIcon />

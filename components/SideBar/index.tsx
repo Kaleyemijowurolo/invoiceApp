@@ -66,17 +66,14 @@ import LightModeIcon from "../icons/LightModeIcon";
 import Logo from "../icons/Logo";
 import NightModeIcon from "../icons/NightModeIcon";
 import styles from "./SideBar.module.scss";
-import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 
 const SideBar = () => {
   const { darkMode, toggleDarkMode } = useTheme();
   const { data: session } = useSession();
-  const router = useRouter();
 
   const handleLogout = () => {
     signOut(); // Clear auth state
-    // router.push("/auth/signin"); // Redirect to sign-in page
   };
 
   // Get the first letter of the user's name or default to "U"
