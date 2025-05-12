@@ -87,11 +87,6 @@ export async function GET(req: AuthenticatedRequest) {
 
     const { status, page, limit } = validatedParams.data;
 
-    // Build query with user filter
-    // const query: { createdBy: string; status?: { $in: string[] } } = {
-    //   createdBy: userId,
-    // };
-
     // Build query: Fetch user's invoices OR seed data invoices
     const query: {
       $or: Array<{ createdBy: string } | { isSeed: boolean }>;
