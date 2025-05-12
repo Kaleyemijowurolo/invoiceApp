@@ -1,8 +1,118 @@
+// @import "../../app/styles/global.scss";
+
+// .sideBar {
+//   width: 103px;
+//   background-color: get-color(draft);
+//   border-top-right-radius: 20px;
+//   border-bottom-right-radius: 20px;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: space-between;
+//   overflow: hidden;
+// }
+
+// .themeButton {
+//   background: none;
+//   border: none;
+//   cursor: pointer;
+//   display: grid;
+//   place-items: center;
+// }
+
+// .profileSection {
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: center;
+//   gap: 20px;
+// }
+
+// .profileImage {
+//   border-top: 1px solid #494e6e;
+//   width: 100%;
+//   padding: 20px;
+//   display: grid;
+//   place-items: center;
+// }
+
+// .darkModeToggleContainer {
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   padding: 20px;
+// }
+
+// // Responsive design
+
+// @include respond-to(tablet) {
+//   .sideBar {
+//     width: 100%;
+//     height: 80px;
+//     border-top-right-radius: 0px;
+//     border-bottom-right-radius: 0px;
+//     display: flex;
+//     flex-direction: row;
+//     overflow: visible;
+//     height: max-content;
+//   }
+
+//   .profileSection {
+//     height: 100%;
+//     display: grid;
+//     grid-template-columns: 1fr 1fr;
+//     padding: 0px;
+//     gap: 0px;
+//     width: 30%;
+//   }
+
+//   .profileImage {
+//     height: 100%;
+//     padding: 0px;
+//     display: grid;
+//     place-items: center;
+//     border-left: 1px solid #494e6e;
+//     border-top: 0px solid transparent;
+//   }
+// }
+
+// @include respond-to(mobile) {
+//   .sideBar {
+//     width: 100vw;
+//     height: 69px;
+//     display: flex;
+//     flex-direction: row;
+//     overflow: visible !important;
+//     border-top-right-radius: 0px;
+//     border-bottom-right-radius: 0px;
+//   }
+
+//   .profileSection {
+//     height: 100%;
+//     display: grid;
+//     grid-template-columns: 1fr 1fr;
+//     padding: 0px;
+//     gap: 0px;
+//     width: 40%;
+//   }
+
+//   .profileImage {
+//     height: 100%;
+//     padding: 0px;
+//     display: grid;
+//     place-items: center;
+//     border-left: 1px solid #494e6e;
+//     border-top: 0px solid transparent;
+//   }
+// }
+
 @import "../../app/styles/global.scss";
 
 .sideBar {
   width: 103px;
-  background-color: get-color(draft);
+  background-color: get-color(
+    medium-blue
+  ); // Changed from get-color(draft) to a valid color
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
   display: flex;
@@ -10,6 +120,15 @@
   align-items: center;
   justify-content: space-between;
   overflow: hidden;
+  transition: background-color 0.3s ease;
+
+  &.dark-mode {
+    background-color: get-color(medium-blue); // Consistent dark mode color
+  }
+
+  &.light-mode {
+    background-color: get-color(white); // Light mode color
+  }
 }
 
 .themeButton {
@@ -18,6 +137,12 @@
   cursor: pointer;
   display: grid;
   place-items: center;
+  padding: 10px;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
 }
 
 .profileSection {
@@ -29,11 +154,31 @@
 }
 
 .profileImage {
-  border-top: 1px solid #494e6e;
+  border-top: 1px solid get-color(dark-gray); // Updated to use theme color
   width: 100%;
   padding: 20px;
   display: grid;
   place-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba(get-color(primary-purple), 0.1); // Hover effect
+  }
+
+  .profileInitial {
+    font-family: var(--font-family);
+    font-size: 18px;
+    font-weight: 700;
+    color: get-color(white);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: get-color(primary-purple);
+    border-radius: 50%;
+  }
 }
 
 .darkModeToggleContainer {
@@ -44,7 +189,6 @@
 }
 
 // Responsive design
-
 @include respond-to(tablet) {
   .sideBar {
     width: 100%;
@@ -71,8 +215,14 @@
     padding: 0px;
     display: grid;
     place-items: center;
-    border-left: 1px solid #494e6e;
+    border-left: 1px solid get-color(dark-gray);
     border-top: 0px solid transparent;
+
+    .profileInitial {
+      width: 30px;
+      height: 30px;
+      font-size: 14px;
+    }
   }
 }
 
@@ -101,7 +251,13 @@
     padding: 0px;
     display: grid;
     place-items: center;
-    border-left: 1px solid #494e6e;
+    border-left: 1px solid get-color(dark-gray);
     border-top: 0px solid transparent;
+
+    .profileInitial {
+      width: 25px;
+      height: 25px;
+      font-size: 12px;
+    }
   }
 }

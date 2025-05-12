@@ -1,0 +1,111 @@
+@import "../../app/styles/global.scss";
+
+.errorPage {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: get-color(white);
+  transition: background-color 0.3s ease;
+
+  &.dark-mode {
+    background-color: get-color(medium-blue);
+
+    .errorCode,
+    .errorTitle,
+    .errorMessage {
+      color: get-color(white);
+    }
+
+    .button {
+      background-color: get-color(primary-purple);
+      &:hover {
+        background-color: darken(get-color(primary-purple), 10%);
+      }
+    }
+  }
+
+  .errorCode {
+    font-family: var(--font-family);
+    font-size: 6rem;
+    font-weight: 700;
+    color: get-color(red);
+    margin-bottom: 16px;
+    line-height: 1;
+
+    @include respond-to(mobile) {
+      font-size: 4rem;
+    }
+  }
+
+  .errorTitle {
+    font-family: var(--font-family);
+    font-size: 2rem;
+    font-weight: 600;
+    color: get-color(dark-blue);
+    margin-bottom: 16px;
+
+    @include respond-to(mobile) {
+      font-size: 1.5rem;
+    }
+  }
+
+  .errorMessage {
+    font-family: var(--font-family);
+    font-size: 1rem;
+    color: get-color(gray);
+    max-width: 400px;
+    text-align: center;
+    margin-bottom: 32px;
+    line-height: 1.5;
+
+    @include respond-to(mobile) {
+      font-size: 0.875rem;
+    }
+  }
+
+  .buttonGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    @include respond-to(sm) {
+      flex-direction: row;
+    }
+  }
+
+  .button {
+    padding: 12px 24px;
+    font-family: var(--font-family);
+    font-size: 14px;
+    font-weight: 500;
+    color: get-color(white);
+    background-color: get-color(dark-blue);
+    border: none;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: darken(get-color(dark-blue), 10%);
+    }
+
+    &:focus {
+      outline: 2px solid get-color(primary-purple);
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      background-color: get-color(gray);
+      cursor: not-allowed;
+    }
+  }
+}
+
+@include respond-to(mobile) {
+  .errorPage {
+    padding: 16px;
+  }
+}
