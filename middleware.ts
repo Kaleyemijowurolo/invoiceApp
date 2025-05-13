@@ -5,6 +5,7 @@ import { getToken } from "next-auth/jwt";
 const allowedOrigins = [
   "http://localhost:3000", // Development
   "http://localhost:3001", // Development
+  "https://invoice-app-neon-phi.vercel.app",
 ];
 
 export async function middleware(req: NextRequest) {

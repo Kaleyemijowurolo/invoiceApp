@@ -9,8 +9,6 @@ export async function POST(request: Request) {
 
   await dbConnect();
 
-  console.log("email", email);
-  console.log("password", password);
   // Validate presence of email and password
   if (!email) {
     return NextResponse.json(
